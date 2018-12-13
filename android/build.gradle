@@ -8,6 +8,7 @@ apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 repositories {
+    google()
     jcenter()
     maven { url 'https://jitpack.io' }
 }
@@ -19,27 +20,21 @@ android {
         withAnalytics {
             dimension "analytics"
         }
-
         noAnalytics {
             dimension "analytics"
         }
-
         withCloud {
             dimension "cloud"
         }
-
         noCloud {
             dimension "cloud"
         }
-
         withAutostart {
             dimension "autostart"
         }
-
         noAutostart {
             dimension "autostart"
         }
-
     }
 
     android.variantFilter { variant ->
@@ -52,14 +47,14 @@ android {
 
     }
 
-    compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         versionCode 259
         versionName "2.5.9"
-        minSdkVersion 9
-        targetSdkVersion 27
+        minSdkVersion 14
+        targetSdkVersion 28
         applicationId "org.ligi.gobandroid_hd"
         testInstrumentationRunner "org.ligi.gobandroid_hd.AppReplacingRunner"
         archivesBaseName = "Gobandroid-$versionName"
@@ -117,77 +112,50 @@ spoon {
 configurations {
 
     // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
-    androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
-    androidTestCompile.exclude group: 'com.android.support', module: 'design'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
-    androidTestCompile.exclude group: 'com.android.support', module: 'preference-v7'
-    androidTestCompile.exclude module: 'recyclerview-v7'
-    androidTestCompile.exclude module: 'kotlin-stdlib'
-}
-
-configurations {
-
-    // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
-    androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
-    androidTestCompile.exclude group: 'com.android.support', module: 'design'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
-    androidTestCompile.exclude group: 'com.android.support', module: 'preference-v7'
-    androidTestCompile.exclude module: 'recyclerview-v7'
+    androidTestImplementation.exclude group: 'com.android.support', module: 'appcompat-v7'
+    androidTestImplementation.exclude group: 'com.android.support', module: 'design'
+    androidTestImplementation.exclude group: 'com.android.support', module: 'support-v4'
+    androidTestImplementation.exclude group: 'com.android.support', module: 'support-annotations'
+    androidTestImplementation.exclude group: 'com.android.support', module: 'preference-v7'
+    androidTestImplementation.exclude module: 'recyclerview-v7'
+    androidTestImplementation.exclude module: 'kotlin-stdlib'
 }
 
 dependencies {
-    compile 'com.github.hotchemi:permissionsdispatcher:2.3.2'
+    implementation 'com.github.hotchemi:permissionsdispatcher:2.3.2'
     kapt 'com.github.hotchemi:permissionsdispatcher-processor:2.3.2'
-
-    compile 'com.github.salomonbrys.kodein:kodein:3.3.0'
-
-    compile "com.android.support:appcompat-v7:$support_version"
-    compile "com.android.support:recyclerview-v7:$support_version"
-    compile "com.android.support:cardview-v7:$support_version"
-    compile "com.android.support:design:$support_version"
-    compile "com.android.support:preference-v7:$support_version"
-
-    compile 'com.github.ligi:KAXT:0.20'
-    compile 'com.github.ligi:tracedroid:1.4'
-
-    compile 'com.github.ligi.snackengage:snackengage-playrate:0.15'
-
-    compile 'com.github.ligi:ExtraCompats:0.4'
-
-    compile 'net.sourceforge.jchardet:jchardet:1.0'
-    compile 'com.squareup.okhttp3:okhttp:3.10.0'
-    compile 'com.n3twork.druid:alphanum:1.0.3'
-    compile "com.android.support:support-annotations:$support_version"
-
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    compile("com.chibatching.kotpref:kotpref:$kotpref_version")
-    compile("com.chibatching.kotpref:initializer:$kotpref_version")
-
-    withAnalyticsCompile "com.google.android.gms:play-services-analytics:$play_version"
-
-    withCloudCompile "com.google.android.gms:play-services-games:$play_version"
-    withCloudCompile "com.google.android.gms:play-services-plus:$play_version"
-    withCloudCompile "com.google.android.gms:play-services-gcm:$play_version"
-    withCloudCompile "com.google.android.gms:play-services-plus:$play_version"
-
-    withCloudCompile ('com.google.apis:google-api-services-games:v1-rev214-1.22.0') {
+    implementation 'com.github.salomonbrys.kodein:kodein:3.3.0'
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "com.android.support:preference-v7:$support_version"
+    implementation 'com.github.ligi:KAXT:0.20'
+    implementation 'com.github.ligi:tracedroid:1.4'
+    implementation 'com.github.ligi.snackengage:snackengage-playrate:0.15'
+    implementation 'com.github.ligi:ExtraCompats:0.4'
+    implementation 'net.sourceforge.jchardet:jchardet:1.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.n3twork.druid:alphanum:1.0.3'
+    implementation "com.android.support:support-annotations:$support_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
+    implementation "com.chibatching.kotpref:initializer:$kotpref_version"
+    withAnalyticsImplementation "com.google.android.gms:play-services-analytics:$play_version"
+    withCloudImplementation "com.google.android.gms:play-services-games:$play_version"
+    withCloudImplementation "com.google.android.gms:play-services-plus:$play_version"
+    withCloudImplementation "com.google.android.gms:play-services-gcm:$play_version"
+    withCloudImplementation "com.google.android.gms:play-services-plus:$play_version"
+    withCloudImplementation('com.google.apis:google-api-services-games:v1-rev214-1.22.0') {
         exclude module: 'jsr305'
     }
-
-    androidTestCompile 'com.github.ligi:trulesk:0.19'
-
-    androidTestCompile "com.android.support:support-annotations:$support_version"
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
-
-    testCompile 'com.squareup.assertj:assertj-android:1.1.1'
-    testCompile "com.android.support:support-annotations:$support_version"
-    testCompile 'junit:junit:4.12'
-
-    androidTestCompile 'com.squareup.spoon:spoon-client:1.7.1'
-
-    compile 'com.google.android:flexbox:0.2.6'
-    compile 'org.greenrobot:eventbus:3.0.0'
+    androidTestImplementation 'com.github.ligi:trulesk:0.19'
+    androidTestImplementation "com.android.support:support-annotations:$support_version"
+    androidTestImplementation 'com.squareup.assertj:assertj-android:1.1.1'
+    testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
+    testImplementation "com.android.support:support-annotations:$support_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
+    implementation 'com.google.android:flexbox:0.2.6'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }
