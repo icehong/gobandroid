@@ -111,20 +111,12 @@ spoon {
 
 configurations {
 
-    // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
-    androidTestImplementation.exclude group: 'com.android.support', module: 'appcompat-v7'
-    androidTestImplementation.exclude group: 'com.android.support', module: 'design'
-    androidTestImplementation.exclude group: 'com.android.support', module: 'support-v4'
-    androidTestImplementation.exclude group: 'com.android.support', module: 'support-annotations'
-    androidTestImplementation.exclude group: 'com.android.support', module: 'preference-v7'
-    androidTestImplementation.exclude module: 'recyclerview-v7'
-    androidTestImplementation.exclude module: 'kotlin-stdlib'
 }
 
 dependencies {
     implementation 'com.github.hotchemi:permissionsdispatcher:2.3.2'
     kapt 'com.github.hotchemi:permissionsdispatcher-processor:2.3.2'
-    implementation 'com.github.salomonbrys.kodein:kodein:3.3.0'
+    implementation 'com.github.salomonbrys.kodein:kodein:4.1.0'
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
@@ -141,20 +133,19 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
     implementation "com.chibatching.kotpref:initializer:$kotpref_version"
-    withAnalyticsImplementation "com.google.android.gms:play-services-analytics:$play_version"
-    withCloudImplementation "com.google.android.gms:play-services-games:$play_version"
-    withCloudImplementation "com.google.android.gms:play-services-plus:$play_version"
-    withCloudImplementation "com.google.android.gms:play-services-gcm:$play_version"
-    withCloudImplementation "com.google.android.gms:play-services-plus:$play_version"
-    withCloudImplementation('com.google.apis:google-api-services-games:v1-rev214-1.22.0') {
+    withAnalyticsImplementation "com.google.android.gms:play-services-analytics:17.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-games:19.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-plus:17.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-gcm:17.0.0"
+    withCloudImplementation('com.google.apis:google-api-services-games:v1-rev98-1.20.0') {
         exclude module: 'jsr305'
     }
     androidTestImplementation 'com.github.ligi:trulesk:0.19'
     androidTestImplementation "com.android.support:support-annotations:$support_version"
-    androidTestImplementation 'com.squareup.assertj:assertj-android:1.1.1'
-    testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
+    androidTestImplementation 'com.squareup.assertj:assertj-android:1.2.0'
+    testImplementation 'com.squareup.assertj:assertj-android:1.2.0'
     testImplementation "com.android.support:support-annotations:$support_version"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
     implementation 'com.google.android:flexbox:0.2.6'
     implementation 'org.greenrobot:eventbus:3.0.0'

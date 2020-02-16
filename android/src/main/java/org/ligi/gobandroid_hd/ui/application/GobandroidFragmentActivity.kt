@@ -96,14 +96,6 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
                 drawerLayout, /* DrawerLayout object */
                 R.string.drawer_open, /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */) {
-            override fun onDrawerOpened(drawerView: View?) {
-                super.onDrawerOpened(drawerView)
-            }
-
-            override fun onDrawerClosed(drawerView: View?) {
-                super.onDrawerClosed(drawerView)
-            }
-
         }
 
         drawerLayout!!.setDrawerListener(drawerToggle)

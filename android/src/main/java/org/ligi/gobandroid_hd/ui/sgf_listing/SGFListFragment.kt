@@ -57,15 +57,15 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
 
     private fun getEnvFromSavedInstance() {
         if (menu_items == null) {
-            menu_items = arguments.getStringArray(EXTRA_MENU_ITEMS)
+            menu_items = arguments?.getStringArray(EXTRA_MENU_ITEMS)
         }
 
         if (dir == null) {
-            dir = arguments.getString(EXTRA_DIR)
+            dir = arguments?.getString(EXTRA_DIR)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val inflate = View.inflate(context, R.layout.recycler_view, null)
         val recyclerView = inflate.findViewById(R.id.content_recycler) as RecyclerView
 
@@ -77,7 +77,7 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
         return inflate
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState!!.putStringArray(EXTRA_MENU_ITEMS, menu_items)
         outState.putString(EXTRA_DIR, dir)
@@ -89,14 +89,14 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
     }
 
     override fun refresh() {
-        val alert = AlertDialog.Builder(activity).setTitle(R.string.problem_listing_sgf)
+        val alert = AlertDialog.Builder(requireActivity()).setTitle(R.string.problem_listing_sgf)
 
         alert.setPositiveButton(R.string.ok, { dialogInterface: DialogInterface, i: Int ->
             dialogInterface.dismiss()
-            activity.finish()
+            requireActivity().finish()
         })
         alert.setOnCancelListener({
-            activity.finish()
+            requireActivity().finish()
         })
 
         if (dir == null) {
@@ -137,9 +137,9 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
                     val game1 = SGFReader.sgf2game(File(dir_file, list[10]).bufferedReader().readText(), null, SGFReader.BREAKON_FIRSTMOVE)
                     val game2 = SGFReader.sgf2game(File(dir_file, list[12]).bufferedReader().readText(), null, SGFReader.BREAKON_FIRSTMOVE)
                     if (game1!=null && game2!=null && !isEmpty(game1.metaData.difficulty) && !isEmpty(game2.metaData.difficulty)) {
-                        AlertDialog.Builder(activity).setMessage("This looks like the gogameguru offline selection - sort by difficulty")
+                        AlertDialog.Builder(requireActivity()).setMessage("This looks like the gogameguru offline selection - sort by difficulty")
                                 .setPositiveButton(R.string.ok) { dialog, which ->
-                                    GoProblemsRenaming(activity, dir_file).execute()
+                                    GoProblemsRenaming(requireActivity(), dir_file).execute()
                                     dialog.dismiss()
                                 }
                                 .setNegativeButton(R.string.cancel, null)
@@ -188,7 +188,7 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
 
     fun delete_sgfmeta() {
         Log.i("delete sgfmeta files")
-        val alertBuilder = AlertDialog.Builder(activity).setTitle(R.string.del_sgfmeta)
+        val alertBuilder = AlertDialog.Builder(requireActivity()).setTitle(R.string.del_sgfmeta)
         alertBuilder.setMessage(R.string.del_sgfmeta_prompt)
 
         if (dir == null) {
@@ -328,7 +328,7 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
                         menuResource = R.menu.list_dir_sgf_action_mode
                     }
 
-                    return object : SGFListActionMode(this@SGFListFragment.activity, fileName, this@SGFListFragment, menuResource) {
+                    return object : SGFListActionMode(this@SGFListFragment.requireActivity(), fileName, this@SGFListFragment, menuResource) {
                         override fun onDestroyActionMode(mode: ActionMode) {
                             actionMode = null
                             cardView.cardElevation = resources.getDimension(R.dimen.cardview_default_elevation)

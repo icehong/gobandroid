@@ -42,7 +42,7 @@ class EditGameExtrasFragment : GobandroidGameAwareFragment() {
         view.comment_et.setText(gameProvider.get().actMove.comment)
         view.comment_et.setHint(R.string.enter_your_comments_here)
         view.comment_et.gravity = Gravity.TOP
-        view.comment_et.setTextColor(ContextCompat.getColor(context, R.color.text_color_on_board_bg))
+        view.comment_et.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color_on_board_bg))
 
         view.comment_et.doAfterEdit {
             gameProvider.get().actMove.comment = it.toString()

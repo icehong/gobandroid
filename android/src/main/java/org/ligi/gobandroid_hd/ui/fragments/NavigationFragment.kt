@@ -26,7 +26,7 @@ class NavigationFragment : GobandroidGameAwareFragment() {
 
         btn_next.setOnClickListener {
             if (GoPrefs.isShowForwardAlertWanted) {
-                GameForwardAlert.showIfNeeded(activity, game)
+                GameForwardAlert.showIfNeeded(requireActivity(), game)
             } else {
                 game.redo(0)
             }

@@ -39,7 +39,7 @@ import java.io.File
 
 class SGFFileSystemListActivity : GobandroidFragmentActivity() {
 
-    private var list_fragment: SGFListFragment? = null
+    private lateinit var list_fragment: SGFListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +116,7 @@ class SGFFileSystemListActivity : GobandroidFragmentActivity() {
                 return true
             }
             R.id.menu_del_sgfmeta -> {
-                list_fragment!!.delete_sgfmeta()
+                list_fragment.delete_sgfmeta()
                 return true
             }
         }

@@ -32,7 +32,7 @@ class TsumegoGameExtrasFragment : Fragment() {
 
         val game = gameProvider.get()
 
-        activity.runOnUiThread {
+        requireActivity().runOnUiThread {
             tsumego_off_path_view.visibility = if (off_path_visible) TextView.VISIBLE else TextView.GONE
 
             if (correct_visible) {
@@ -75,7 +75,7 @@ class TsumegoGameExtrasFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val res = inflater!!.inflate(R.layout.game_extra_tsumego, container, false)
 
         updateUI()
