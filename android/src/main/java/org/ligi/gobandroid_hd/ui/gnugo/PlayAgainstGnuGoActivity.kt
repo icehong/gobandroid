@@ -4,16 +4,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Bundle
-import android.os.IBinder
-import android.os.RemoteException
-import android.os.SystemClock
+import android.os.*
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.icehong.gnugo.IGnugoS
 import org.ligi.gobandroid_hd.App
+import org.ligi.gobandroid_hd.GoClient
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.*
@@ -24,14 +23,12 @@ import org.ligi.gobandroid_hd.util.SimpleStopwatch
 import org.ligi.gobandroidhd.ai.gnugo.IGnuGoService
 import org.ligi.kaxt.makeExplicit
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 /**
  * Activity to play vs GnoGo
  */
 class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
-
-    private var service: IGnuGoService? = null
-    private var connection: ServiceConnection? = null
 
     private lateinit var dlg: GnuGoSetupDialog
 
@@ -40,6 +37,50 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
     private var avgTimeInMillis: Long = 0
 
     private var gnuGoGame: GnuGoGame? = null
+
+
+    private val client = GoClient("127.0.0.1", 1234)
+    var mService: IGnugoS? = null
+    val mConnection = object : ServiceConnection {
+        // Called when the connection with the service is established
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mService = IGnugoS.Stub.asInterface(service)
+            Timber.i("onServiceConnected")
+
+            val mRunnable = Runnable {
+                run {
+                    if(client.initConnect()){
+                        // client.sendThread()
+                        //client.receiveThread(mHandler)
+                    }
+                }
+            }
+            Thread(mRunnable).start()
+        }
+        // Called when the connection with the service disconnects unexpectedly
+        override fun onServiceDisconnected(className: ComponentName) {
+            Timber.i("onServiceDisconnected")
+            mService = null
+            client.close()
+        }
+    }
+    class MyHandler(activity: PlayAgainstGnuGoActivity?) : Handler() {
+        var wractivity: WeakReference<PlayAgainstGnuGoActivity> = WeakReference<PlayAgainstGnuGoActivity>(activity)
+        override fun handleMessage(msg: Message) {
+            val mactivity = wractivity.get() ?: return
+            super.handleMessage(msg)
+            when (msg.what) {
+                0 -> {
+                    //mactivity.AppendResult(msg.obj as String)
+                }
+            }
+        }
+    }
+
+    // val mHandler: Handler = HandlerCompat.createAsync(Looper.getMainLooper())
+    private val mHandler: Handler = MyHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,11 +104,16 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
             dialog.dismiss()
         }
 
-        dlg.setNegativeButton(R.string.cancel, { dialog ->
+        dlg.setNegativeButton(R.string.cancel) { dialog ->
             dialog.dismiss()
-            finish()
-        })
+            //finish()
+        }
         dlg.show()
+
+        val intentService =  Intent("com.icehong.gnugo.GnugoService")
+        intentService.setAction("com.icehong.gnugo.GnugoService")
+        intentService.setPackage("com.icehong.gnugo")
+        bindService(intentService, mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -83,35 +129,7 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
 
     override fun onResume() {
         super.onResume()
-        connection = object : ServiceConnection {
-
-            override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                this@PlayAgainstGnuGoActivity.service = IGnuGoService.Stub.asInterface(service)
-
-                try {
-                    Timber.i("Service bound to " + this@PlayAgainstGnuGoActivity.service!!.processGTP("version"))
-                } catch (e: RemoteException) {
-                    Timber.w(e, "RemoteException when connecting")
-                }
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-                Timber.i("Service unbound ")
-            }
-        }
-
-        val intent = gnuGoIntent
-        val resolveInfo = packageManager.resolveService(intent, 0)
-
-        val name = ComponentName(resolveInfo!!.serviceInfo.packageName, resolveInfo.serviceInfo.name)
-
-        intent.component = name
-
-        app.bindService(intent, connection!!, Context.BIND_AUTO_CREATE)
-
         Thread(this).start()
-
-        super.onStart()
     }
 
     override fun onPause() {
@@ -120,24 +138,14 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
     }
 
     fun stop() {
-        if (service == null) {
-            return
-        }
 
-        service = null
         try {
-            application.unbindService(connection!!)
-            application.stopService(gnuGoIntent)
+            application.unbindService(mConnection)
         } catch (e: Exception) {
             Timber.w(e, "Exception in stop()")
         }
 
-        connection = null
-
     }
-
-    private val gnuGoIntent: Intent
-        get() = Intent(GnuGoHelper.INTENT_ACTION_NAME).makeExplicit(this)!!
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
@@ -183,7 +191,7 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
 
     fun processMove(color: String, cell: Cell) {
         try {
-            service!!.processGTP(color + " " + coordinates2gtpstr(cell))
+            client.processGTP(color + " " + coordinates2gtpstr(cell))
         } catch (e: Exception) {
             Timber.w("problem processing " + color + " move to " + coordinates2gtpstr(cell))
         }
@@ -192,25 +200,25 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
 
     private fun checkGnuGoSync(): Boolean {
         return try {
-            GnuGoHelper.checkGnuGoSync(service!!.processGTP("showboard"), game)
+            GnuGoHelper.checkGnuGoSync(client.processGTP("showboard"), game)
         } catch (e: RemoteException) {
             false
         }
     }
 
     override fun run() {
-        while (connection != null) {
+        while (true) {
             SystemClock.sleep(100)
 
             // blocker for the following steps
-            if (service == null || gnuGoGame == null || game.isFinished || connection == null) {
+            if ( gnuGoGame == null || game.isFinished || !client.bConnected || gnuGoGame!!.aiIsThinking) {
                 continue
             }
 
             if (gnugoSizeSet && !checkGnuGoSync()) { // check if gobandroid
                 // and gnugo see the same board - otherwise tell gnugo about the truth afterwards ;-)
                 try {
-                    Timber.i("gnugo sync check problem" + service!!.processGTP("showboard") + game.visualBoard.toString())
+                    Timber.i("gnugo sync check problem" + client.processGTP("showboard") + game.visualBoard.toString())
                     gnugoSizeSet = false
                 } catch (e: RemoteException) {
                     Timber.w(e, "RemoteException when syncing")
@@ -221,13 +229,13 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
             if (!gnugoSizeSet) {
                 try {
                     // set the size
-                    service!!.processGTP("boardsize " + game.boardSize)
+                    client.processGTP("boardsize " + game.boardSize)
                     game.statelessGoBoard.withAllCells { statelessBoardCell ->
                         try {
                             if (game.handicapBoard.isCellDeadWhite(statelessBoardCell)) {
-                                service!!.processGTP("white " + coordinates2gtpstr(statelessBoardCell))
+                                client.processGTP("white " + coordinates2gtpstr(statelessBoardCell))
                             } else if (game.handicapBoard.isCellBlack(statelessBoardCell)) {
-                                service!!.processGTP("black " + coordinates2gtpstr(statelessBoardCell))
+                                client.processGTP("black " + coordinates2gtpstr(statelessBoardCell))
                             }
                         } catch (e: RemoteException) {
                             e.printStackTrace()
@@ -246,13 +254,13 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
                         tmp_move = replay_moves[step]
                         val gtpMove = getGtpMoveFromMove(tmp_move)
                         if (tmp_move.player == GoDefinitions.PLAYER_BLACK) {
-                            service!!.processGTP("play black " + gtpMove)
+                            client.processGTP("play black " + gtpMove)
                         } else {
-                            service!!.processGTP("play white " + gtpMove)
+                            client.processGTP("play white " + gtpMove)
                         }
                     }
 
-                    Timber.i("setting level " + service!!.processGTP("level " + gnuGoGame!!.level))
+                    Timber.i("setting level " + client.processGTP("level " + gnuGoGame!!.level))
                     gnugoSizeSet = true
                 } catch (e: Exception) {
                     Timber.w(e, "RemoteException when configuring")
@@ -269,7 +277,6 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
 
         }
         stop()
-
     }
 
     private fun getGtpMoveFromMove(currentMove: GoMove): String {
@@ -284,14 +291,14 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
         gnuGoGame!!.aiIsThinking = true
         val simpleStopwatch = SimpleStopwatch()
         try {
-            val answer = service!!.processGTP("genmove " + color)
+            val answer = client.processGTP("genmove " + color)
 
             if (!GTPHelper.doMoveByGTPString(answer, game)) {
-                Timber.w("GnuGoProblem " + answer + " board " + service!!.processGTP("showboard"))
+                Timber.w("GnuGoProblem " + answer + " board " + client.processGTP("showboard"))
                 Timber.w("restarting GnuGo " + answer)
                 gnugoSizeSet = false // reset
             }
-            Timber.i("gugoservice" + service!!.processGTP("showboard"))
+            Timber.i("gugoservice" + client.processGTP("showboard"))
         } catch (e: Exception) {
             Timber.w(e, "RemoteException when moving")
         }
@@ -322,7 +329,7 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
         }
 
         try {
-            val undoResult = service!!.processGTP("gg-undo 2")
+            val undoResult = client.processGTP("gg-undo 2")
             Timber.i("gugoservice undo " + undoResult)
         } catch (e: Exception) {
             Timber.w(e, "RemoteException when undoing")
