@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "china_only" ]
   pull_request:
     branches: [ "master" ]
 
