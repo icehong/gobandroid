@@ -38,7 +38,8 @@
                 android:name="com.sec.android.app.multiwindow"
                 android:required="false" />
 
-        <activity android:name="org.ligi.gobandroid_hd.ui.game_setup.GoSetupActivity">
+        <activity android:name="org.ligi.gobandroid_hd.ui.game_setup.GoSetupActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,7 +50,8 @@
         </activity>
         <activity
                 android:name="org.ligi.gobandroid_hd.ui.GobanDroidTVActivity"
-                android:icon="@drawable/gobandroid_tv"
+            android:exported="true"
+            android:icon="@drawable/gobandroid_tv"
                 android:label="Gobandroid TV"
                 android:launchMode="singleTask">
             <intent-filter>
@@ -63,7 +65,8 @@
                 <category android:name="tv.ouya.intent.category.GAME" />
             </intent-filter>
         </activity>
-        <activity android:name="org.ligi.gobandroid_hd.ui.GobanDroidTVActivityNOIF">
+        <activity android:name="org.ligi.gobandroid_hd.ui.GobanDroidTVActivityNOIF"
+            android:exported="true">
             <intent-filter>
                 <action android:name="org.ligi.gobandroid.NOIF" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -73,7 +76,8 @@
                 android:name="org.ligi.gobandroid_hd.ui.go_terminology.GoTerminologyViewActivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/TransparentTheme">
+            android:exported="true"
+            android:theme="@style/TransparentTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -96,7 +100,8 @@
                 android:exported="true"
                 android:launchMode="singleInstance" />
         <activity android:name="org.ligi.gobandroid_hd.ui.SGFLoadActivity" />
-        <activity android:name="org.ligi.gobandroid_hd.ui.SGFLoadFromExternalActivity">
+        <activity android:name="org.ligi.gobandroid_hd.ui.SGFLoadFromExternalActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -218,7 +223,8 @@
                 <data android:mimeType="application/x-go-sgf" />
             </intent-filter>
         </activity>
-        <activity android:name="org.ligi.gobandroid_hd.ui.GoLinkLoadActivity">
+        <activity android:name="org.ligi.gobandroid_hd.ui.GoLinkLoadActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
