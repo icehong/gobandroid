@@ -16,10 +16,10 @@ repositories {
 //    maven { url 'https://maven.aliyun.com/repositories/google' }
 //    maven { url 'https://maven.aliyun.com/repository/central' }
 //    maven { url 'https://jitpack.io' }
-    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public'}
+    maven{ url 'https://maven.aliyun.com/nexus/content/groups/public'}
     maven { url 'https://maven.aliyun.com/repositories/google' }
     google()
-    jcenter()
+    mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url 'https://repo.clojars.org' }
     maven { url 'https://linkedin.jfrog.io/artifactory/open-source/' }
@@ -71,7 +71,6 @@ android {
     }
 
     compileSdkVersion 30
-    buildToolsVersion '29.0.3'
 
     defaultConfig {
         versionCode 260
