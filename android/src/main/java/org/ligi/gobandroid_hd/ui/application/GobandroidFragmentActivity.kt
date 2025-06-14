@@ -1,5 +1,6 @@
 package org.ligi.gobandroid_hd.ui.application
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
@@ -12,11 +13,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.navigation_drawer_container.*
 import org.greenrobot.eventbus.EventBus
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.GameBinding
+import org.ligi.gobandroid_hd.databinding.NavigationDrawerContainerBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.model.GameProvider
@@ -42,12 +44,11 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
     private var drawerToggle: ActionBarDrawerToggle? = null
     private var drawerLayout: DrawerLayout? = null
 
+    @SuppressLint("SoonBlockedPrivateApi")
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (supportActionBar != null) {// yes this happens - e.g.
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // a little hack because I strongly disagree with the style guide here
         // ;-)
         // not having the Actionbar overflow menu also with devices with hardware
@@ -56,10 +57,8 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
         try {
             val config = ViewConfiguration.get(this)
             val menuKeyField = ViewConfiguration::class.java.getDeclaredField("sHasPermanentMenuKey")
-            if (menuKeyField != null) {
-                menuKeyField.isAccessible = true
-                menuKeyField.setBoolean(config, false)
-            }
+            menuKeyField.isAccessible = true
+            menuKeyField.setBoolean(config, false)
         } catch (ignored: Exception) {
             // Ignore - but at least we tried ;-)
         }
@@ -70,7 +69,7 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
         }
     }
 
-    fun closeDrawers() {
+    private fun closeDrawers() {
         drawerLayout!!.closeDrawers()
     }
 
@@ -79,7 +78,8 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
 
         layoutInflater.inflate(layoutResId, findViewById<ViewGroup>(R.id.content_frame))
 
-        left_drawer.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+        val leftDrawer = findViewById<NavigationView>(R.id.left_drawer)
+        leftDrawer.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             val function = actionMap[item.itemId]
             if (function != null) {
                 closeDrawers()

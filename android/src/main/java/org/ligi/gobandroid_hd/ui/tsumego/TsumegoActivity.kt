@@ -4,7 +4,7 @@ import android.content.DialogInterface
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.game.*
+
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.events.TsumegoSolved
@@ -55,7 +55,7 @@ class TsumegoActivity : GoActivity() {
     }
 
     override fun requestUndo() {
-        go_board.move_stone_mode = false
+        binding.goBoard.move_stone_mode = false
         // we do not want to keep user-variations in tsumego mode- but we want
         // to keep tsumego variation
         game.undo(tsumegoController.isOnPath())
@@ -89,8 +89,8 @@ class TsumegoActivity : GoActivity() {
 
         val myZoom = TsumegoHelper.calcZoom(game, true)
 
-        go_board.zoom = myZoom
-        go_board.setZoomPOI(TsumegoHelper.calcPOI(game, true))
+        binding.goBoard.zoom = myZoom
+        binding.goBoard.setZoomPOI(TsumegoHelper.calcPOI(game, true))
         onGameChanged(GameChangedEvent)
 
     }

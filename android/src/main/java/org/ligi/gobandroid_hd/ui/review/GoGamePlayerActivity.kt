@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.*
-import kotlinx.android.synthetic.main.game.*
+
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.logic.Cell
@@ -57,8 +57,8 @@ class GoGamePlayerActivity : GoActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        go_board.setOnKeyListener(this)
-        go_board.do_actpos_highlight = false
+        binding.goBoard.setOnKeyListener(this)
+        binding.goBoard.do_actpos_highlight = false
 
     }
 

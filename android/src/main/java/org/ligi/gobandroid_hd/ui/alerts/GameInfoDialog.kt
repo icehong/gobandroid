@@ -22,11 +22,12 @@
 package org.ligi.gobandroid_hd.ui.alerts
 
 import android.content.Context
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import android.view.View
-import kotlinx.android.synthetic.main.dialog_gobandroid.view.*
-import kotlinx.android.synthetic.main.game_info.view.*
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.DialogGameForwardBinding
+import org.ligi.gobandroid_hd.databinding.GameInfoBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.ui.BaseProfileActivity
 import org.ligi.gobandroid_hd.ui.GoPrefs
@@ -39,6 +40,8 @@ import org.ligi.kaxt.startActivityFromClass
  * Class to show an Alert with the Game Info ( who plays / rank / game name .. )
  */
 class GameInfoDialog(context: Context, game: GoGame) : GobandroidDialog(context) {
+    private var binding: GameInfoBinding = GameInfoBinding.inflate(LayoutInflater.from(context))
+
 
     private fun checkUserNamePresent(): Boolean {
         if (GoPrefs.username.isEmpty()) {
@@ -51,64 +54,64 @@ class GameInfoDialog(context: Context, game: GoGame) : GobandroidDialog(context)
     init {
         setTitle(R.string.game_info)
         setIconResource(R.drawable.ic_action_info_outline)
-        setContentView(R.layout.game_info)
+        setContentView(binding.root)
 
-        container.dialog_content.black_name_et.doAfterEdit {
-            updateItsMeButtonVisibility(container.dialog_content)
+        binding.blackNameEt.doAfterEdit {
+            updateItsMeButtonVisibility()
         }
 
-        container.white_name_et.doAfterEdit {
-            updateItsMeButtonVisibility(container.dialog_content)
+        binding.whiteNameEt.doAfterEdit {
+            updateItsMeButtonVisibility()
         }
 
-        container.dialog_content.user_is_white_btn.setOnClickListener {
+        binding.userIsWhiteBtn.setOnClickListener {
             if (checkUserNamePresent()) {
-                container.dialog_content.white_name_et.setText(GoPrefs.username)
-                container.white_rank_et.setText(GoPrefs.rank)
+                binding.whiteNameEt.setText(GoPrefs.username)
+                binding.whiteRankEt.setText(GoPrefs.rank)
             }
         }
 
-        container.dialog_content.user_is_black_btn.setOnClickListener {
+        binding.userIsBlackBtn.setOnClickListener {
             if (checkUserNamePresent()) {
-                container.dialog_content.black_name_et.setText(GoPrefs.username)
-                container.dialog_content.black_rank_et.setText(GoPrefs.rank)
+                binding.blackNameEt.setText(GoPrefs.username)
+                binding.blackRankEt.setText(GoPrefs.rank)
             }
         }
 
-        container.button_komi_seven.setOnClickListener {
-            container.komi_et.setText("7.5")
+        binding.buttonKomiSeven.setOnClickListener {
+            binding.komiEt.setText("7.5")
         }
 
-        container.button_komi_six.setOnClickListener {
-            container.komi_et.setText("6.5")
+        binding.buttonKomiSix.setOnClickListener {
+            binding.komiEt.setText("6.5")
         }
 
 
-        container.button_komi_five.setOnClickListener {
-            container.komi_et.setText("5.5")
+        binding.buttonKomiFive.setOnClickListener {
+            binding.komiEt.setText("5.5")
         }
-        container.game_name_et.setText(game.metaData.name)
-        container.black_name_et.setText(game.metaData.blackName)
-        container.black_rank_et.setText(game.metaData.blackRank)
-        container.white_name_et.setText(game.metaData.whiteName)
-        container.white_rank_et.setText(game.metaData.whiteRank)
-        container.komi_et.setText(game.komi.toString())
-        container.game_result_et.setText(game.metaData.result)
-        container.game_difficulty_et.setText(game.metaData.difficulty)
-        container.game_date_et.setText(game.metaData.date)
+        binding.gameNameEt.setText(game.metaData.name)
+        binding.blackNameEt.setText(game.metaData.blackName)
+        binding.blackRankEt.setText(game.metaData.blackRank)
+        binding.whiteNameEt.setText(game.metaData.whiteName)
+        binding.whiteRankEt.setText(game.metaData.whiteRank)
+        binding.komiEt.setText(game.komi.toString())
+        binding.gameResultEt.setText(game.metaData.result)
+        binding.gameDifficultyEt.setText(game.metaData.difficulty)
+        binding.gameDateEt.setText(game.metaData.date)
 
-        updateItsMeButtonVisibility(container)
+        updateItsMeButtonVisibility()
 
         setPositiveButton(android.R.string.ok, { dialog ->
-            game.metaData.name = container.game_name_et.text.toString()
-            game.metaData.blackName = container.black_name_et.text.toString()
-            game.metaData.blackRank = container.black_rank_et.text.toString()
-            game.metaData.whiteName = container.white_name_et.text.toString()
-            game.metaData.whiteRank = container.white_rank_et.text.toString()
-            game.metaData.date = container.game_date_et.text.toString()
+            game.metaData.name = binding.gameNameEt.text.toString()
+            game.metaData.blackName = binding.blackNameEt.text.toString()
+            game.metaData.blackRank = binding.blackRankEt.text.toString()
+            game.metaData.whiteName = binding.whiteNameEt.text.toString()
+            game.metaData.whiteRank = binding.whiteRankEt.text.toString()
+            game.metaData.date = binding.gameDateEt.text.toString()
 
             try {
-                game.komi = java.lang.Float.valueOf(container.komi_et.text.toString())
+                game.komi = java.lang.Float.valueOf(binding.komiEt.text.toString())
             } catch (ne: NumberFormatException) {
                 AlertDialog.Builder(context).setMessage(R.string.komi_must_be_a_number)
                         .setPositiveButton(android.R.string.ok, null)
@@ -116,13 +119,13 @@ class GameInfoDialog(context: Context, game: GoGame) : GobandroidDialog(context)
                         .show()
             }
 
-            game.metaData.result = container.game_result_et.text.toString()
+            game.metaData.result = binding.gameResultEt.text.toString()
             dialog.dismiss()
         })
     }
 
-    private fun updateItsMeButtonVisibility(content: View) {
-        content.user_is_white_btn.setVisibility(content.white_name_et.text.toString().isEmpty())
-        content.user_is_black_btn.setVisibility(content.black_name_et.text.toString().isEmpty())
+    private fun updateItsMeButtonVisibility() {
+        binding.userIsWhiteBtn.setVisibility(binding.whiteNameEt.text.toString().isEmpty())
+        binding.userIsBlackBtn.setVisibility(binding.blackNameEt.text.toString().isEmpty())
     }
 }

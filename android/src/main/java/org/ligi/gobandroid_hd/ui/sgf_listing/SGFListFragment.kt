@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.davekoelle.alphanum.AlphanumComparator
 import org.ligi.gobandroid_hd.InteractionScope.Mode.TSUMEGO
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.SgfDirListItemBinding
+import org.ligi.gobandroid_hd.databinding.SgfReviewGameDetailsListItemBinding
+import org.ligi.gobandroid_hd.databinding.SgfTsumegoListItemBinding
 import org.ligi.gobandroid_hd.helper.SGFFileNameFilter
 import org.ligi.gobandroid_hd.logic.sgf.SGFReader
 import org.ligi.gobandroid_hd.ui.GoLinkLoadActivity
@@ -252,10 +255,11 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
             val inflator = LayoutInflater.from(parent.context)
 
             when (viewType) {
-                TYPE_PATH -> return PathViewHolder(inflator.inflate(R.layout.sgf_dir_list_item, parent, false))
-                TYPE_TSUMEGO -> return TsumegoViewHolder(inflator.inflate(R.layout.sgf_tsumego_list_item, parent, false))
+                TYPE_PATH -> return PathViewHolder(SgfDirListItemBinding.inflate(inflator, parent, false))
+                TYPE_TSUMEGO -> return TsumegoViewHolder(SgfTsumegoListItemBinding.inflate(inflator, parent, false))
 
-                TYPE_GOLINK, TYPE_REVIEW -> return ReviewViewHolder(inflator.inflate(R.layout.sgf_review_game_details_list_item, parent, false))
+                TYPE_GOLINK, TYPE_REVIEW -> return ReviewViewHolder(
+                    SgfReviewGameDetailsListItemBinding.inflate(inflator, parent, false))
 
                 else -> throw IllegalStateException("unknown view-type " + viewType)
             }

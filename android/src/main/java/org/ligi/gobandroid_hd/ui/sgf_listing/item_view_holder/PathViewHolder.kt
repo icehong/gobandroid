@@ -2,12 +2,13 @@ package org.ligi.gobandroid_hd.ui.sgf_listing.item_view_holder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.main.sgf_dir_list_item.view.*
+import org.ligi.gobandroid_hd.databinding.SgfDirListItemBinding
 import java.io.File
 
-class PathViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ViewHolderInterface {
+class PathViewHolder(_binding: SgfDirListItemBinding) : RecyclerView.ViewHolder(_binding.root), ViewHolderInterface {
+    private val binding = _binding
 
     override fun apply(file: File) {
-        itemView.pathName.text = file.name
+        binding.pathName.text = file.name
     }
 }

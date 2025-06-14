@@ -7,24 +7,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import kotlinx.android.synthetic.main.nav_button_container.*
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.NavButtonContainerBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.GoMove
 import org.ligi.gobandroid_hd.ui.GoPrefs
 import org.ligi.gobandroid_hd.ui.alerts.GameForwardAlert
 
 class NavigationFragment : GobandroidGameAwareFragment() {
+    private var _binding: NavButtonContainerBinding? = null
+    private val binding get() = _binding!!
 
     override fun createView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-            = inflater.inflate(R.layout.nav_button_container, container, false)
-
+    {
+        _binding = NavButtonContainerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onStart() {
         super.onStart()
         updateButtonStates()
 
-        btn_next.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             if (GoPrefs.isShowForwardAlertWanted) {
                 GameForwardAlert.showIfNeeded(requireActivity(), game)
             } else {
@@ -32,13 +40,13 @@ class NavigationFragment : GobandroidGameAwareFragment() {
             }
         }
 
-        btn_prev.setOnClickListener {
+        binding.btnPrev.setOnClickListener {
             if (game.canUndo()) {
                 game.undo()
             }
         }
 
-        btn_first.setOnClickListener {
+        binding.btnFirst.setOnClickListener {
             val nextJunction = game.findPrevJunction()
             if (nextJunction!!.isFirstMove) {
                 game.jump(nextJunction)
@@ -48,12 +56,12 @@ class NavigationFragment : GobandroidGameAwareFragment() {
             }
         }
 
-        btn_first.setOnLongClickListener {
+        binding.btnFirst.setOnLongClickListener {
             game.jump(game.findFirstMove())
             true
         }
 
-        btn_last.setOnClickListener {
+        binding.btnLast.setOnClickListener {
             val nextJunction = game.findNextJunction()
             if (nextJunction!!.hasNextMove()) {
                 showJunctionInfoSnack(R.string.found_junction_snack_for_last)
@@ -63,7 +71,7 @@ class NavigationFragment : GobandroidGameAwareFragment() {
             }
         }
 
-        btn_last.setOnLongClickListener {
+        binding.btnLast.setOnLongClickListener {
             game.jump(game.findLastMove())
             true
         }
@@ -75,10 +83,10 @@ class NavigationFragment : GobandroidGameAwareFragment() {
     }
 
     private fun updateButtonStates() {
-        setImageViewState(game.canUndo(), btn_first, btn_prev)
-        setImageViewState(game.canRedo(), btn_next, btn_last)
-        bindButtonToMove(game.nextVariationWithOffset(-1), btn_previous_var)
-        bindButtonToMove(game.nextVariationWithOffset(1), btn_next_var)
+        setImageViewState(game.canUndo(), binding.btnFirst, binding.btnPrev)
+        setImageViewState(game.canRedo(), binding.btnNext, binding.btnLast)
+        bindButtonToMove(game.nextVariationWithOffset(-1), binding.btnPreviousVar)
+        bindButtonToMove(game.nextVariationWithOffset(1), binding.btnNextVar)
     }
 
     private fun bindButtonToMove(move: GoMove?, button: ImageView) {
@@ -95,7 +103,7 @@ class NavigationFragment : GobandroidGameAwareFragment() {
 
     private fun showJunctionInfoSnack(found_junction_snack_for_last: Int) {
         if (!GoPrefs.hasAcknowledgedJunctionInfo) {
-            Snackbar.make(btn_last!!, found_junction_snack_for_last, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) { GoPrefs.hasAcknowledgedJunctionInfo = true }.show()
+            Snackbar.make(binding.btnLast, found_junction_snack_for_last, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) { GoPrefs.hasAcknowledgedJunctionInfo = true }.show()
         }
     }
 

@@ -5,8 +5,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import kotlinx.android.synthetic.main.share_options.view.*
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.ShareOptionsBinding
 import org.ligi.gobandroid_hd.ui.GoBoardView
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 import java.io.File
@@ -23,14 +23,15 @@ class ShareSGFDialog(context: Context) : GobandroidDialog(context) {
 
     init {
 
-        setContentView(R.layout.share_options)
+        val binding = ShareOptionsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setTitle(R.string.share)
         setIconResource(R.drawable.ic_social_share)
 
         setNegativeButton(R.string.cancel)
         setPositiveButton(R.string.ok,  { _ ->
-            when (container.shareTypeRadioGroup.checkedRadioButtonId) {
+            when (binding.shareTypeRadioGroup.checkedRadioButtonId) {
                 R.id.radioButtonAsUnicode -> {
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.putExtra(Intent.EXTRA_TEXT, gameProvider.get().visualBoard.toString(true))

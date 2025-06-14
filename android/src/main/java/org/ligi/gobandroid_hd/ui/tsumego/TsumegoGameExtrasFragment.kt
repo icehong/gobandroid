@@ -10,14 +10,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
-import kotlinx.android.synthetic.main.game_extra_tsumego.*
 import org.ligi.compat.HtmlCompat
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.GameExtraTsumegoBinding
 import org.ligi.gobandroid_hd.model.GameProvider
 import org.ligi.gobandroid_hd.ui.go_terminology.GoTerminologyViewActivity
 
 class TsumegoGameExtrasFragment : Fragment() {
+    private var _binding: GameExtraTsumegoBinding? = null
+    private val binding get() = _binding!!
 
     internal val gameProvider: GameProvider  by App.kodein.lazy.instance()
 
@@ -26,24 +28,24 @@ class TsumegoGameExtrasFragment : Fragment() {
     private var correct_visible = false
 
     private fun updateUI() {
-        if (tsumego_off_path_view == null || tsumego_correct_view == null || activity == null) { // views not yet created
+        if (activity == null) { // views not yet created
             return  // will come back later
         }
 
         val game = gameProvider.get()
 
         requireActivity().runOnUiThread {
-            tsumego_off_path_view.visibility = if (off_path_visible) TextView.VISIBLE else TextView.GONE
+            binding.tsumegoOffPathView.visibility = if (off_path_visible) TextView.VISIBLE else TextView.GONE
 
             if (correct_visible) {
-                tsumego_correct_view!!.visibility = View.VISIBLE
+                binding.tsumegoCorrectView.visibility = View.VISIBLE
                 val optionalNextTsumegoURLString = NextTsumegoFileFinder.calcNextTsumego(game.metaData
                         .fileName
                         .replaceFirst("file://".toRegex(), ""))
 
                 if (optionalNextTsumegoURLString != null) {
 
-                    tsumego_correct_view!!.movementMethod = LinkMovementMethod.getInstance()
+                    binding.tsumegoCorrectView.movementMethod = LinkMovementMethod.getInstance()
 
                     val text = getString(R.string.tsumego_correct) +
                             " <a href='tsumego://" +
@@ -51,35 +53,38 @@ class TsumegoGameExtrasFragment : Fragment() {
                             "'>" +
                             getString(R.string.next_tsumego) +
                             "</a>"
-                    tsumego_correct_view!!.text = HtmlCompat.fromHtml(text)
+                    binding.tsumegoCorrectView.text = HtmlCompat.fromHtml(text)
                 } else {
-                    tsumego_correct_view.text = getString(R.string.correct_but_no_more_tsumegos)
+                    binding.tsumegoCorrectView.text = getString(R.string.correct_but_no_more_tsumegos)
                 }
             } else {
-                tsumego_correct_view.visibility = View.GONE
+                binding.tsumegoCorrectView.visibility = View.GONE
             }
 
             // the 10 is a bit of a magic number - just want to show comments that
             // have extras here to prevent double commentView written - but sometimes
             // there is more info in the commentView
             if (!correct_visible && game.actMove.comment.length > 10) {
-                game_comment!!.visibility = View.VISIBLE
-                game_comment!!.text = game.actMove.comment
+                binding.gameComment.visibility = View.VISIBLE
+                binding.gameComment.text = game.actMove.comment
                 if (!TextUtils.isEmpty(game.actMove.comment)) {
-                    GoTerminologyViewActivity.linkifyTextView(game_comment!!)
+                    GoTerminologyViewActivity.linkifyTextView(binding.gameComment)
                 }
             } else {
-                game_comment!!.visibility = View.GONE
+                binding.gameComment.visibility = View.GONE
             }
         }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val res = inflater.inflate(R.layout.game_extra_tsumego, container, false)
-
+        _binding = GameExtraTsumegoBinding.inflate(inflater, container, false)
         updateUI()
-        return res
+        return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun setOffPathVisibility(visible: Boolean) {

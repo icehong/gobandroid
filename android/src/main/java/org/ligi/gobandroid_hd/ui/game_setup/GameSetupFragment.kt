@@ -8,19 +8,19 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import com.chibatching.kotpref.bulk
-import kotlinx.android.synthetic.main.game.*
-import kotlinx.android.synthetic.main.game_setup_inner.*
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.GameSetupInnerBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.ui.GoActivity
 import org.ligi.gobandroid_hd.ui.GoPrefs
 import org.ligi.gobandroid_hd.ui.fragments.GobandroidFragment
 
 class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
+    private var _binding: GameSetupInnerBinding? = null
+    private val binding get() = _binding!!
 
     val size_offset = 2
-
     var act_size = GoPrefs.lastBoardSize
     var act_handicap = GoPrefs.lastHandicap
     var act_lineWidth = GoPrefs.boardLineWidth
@@ -47,21 +47,25 @@ class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
 
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.game_setup_inner, container, false)
-        return view
+        _binding = GameSetupInnerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onStart() {
 
-        size_seek.setOnSeekBarChangeListener(this)
-        handicap_seek.setOnSeekBarChangeListener(this)
-        line_width_seek.setOnSeekBarChangeListener(this)
+        binding.sizeSeek.setOnSeekBarChangeListener(this)
+        binding.handicapSeek.setOnSeekBarChangeListener(this)
+        binding.lineWidthSeek.setOnSeekBarChangeListener(this)
 
-        size_button9x9.setOnClickListener { setSize(9) }
-        size_button13x13.setOnClickListener { setSize(13) }
-        size_button19x19.setOnClickListener { setSize(19) }
+        binding.sizeButton9x9.setOnClickListener { setSize(9) }
+        binding.sizeButton13x13.setOnClickListener { setSize(13) }
+        binding.sizeButton19x19.setOnClickListener { setSize(19) }
 
         refresh_ui()
         super.onStart()
@@ -69,11 +73,11 @@ class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
 
-        if (seekBar === size_seek && act_size != (progress + size_offset)) {
+        if (seekBar === binding.sizeSeek && act_size != (progress + size_offset)) {
             setSize(progress + size_offset)
-        } else if (seekBar === handicap_seek) {
+        } else if (seekBar === binding.handicapSeek) {
             act_handicap = progress.toByte().toInt()
-        } else if (seekBar === line_width_seek) {
+        } else if (seekBar === binding.lineWidthSeek) {
             act_lineWidth = progress.toByte().toInt()
         }
 
@@ -87,13 +91,13 @@ class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
      */
     fun refresh_ui() {
 
-        game_size_label.text = getString(R.string.size) + " " + act_size + "x" + act_size
+        binding.gameSizeLabel.text = getString(R.string.size) + " " + act_size + "x" + act_size
 
         if (!isAnimating()) {
             // only enable handicap seeker when the size is 9x9 or 13x13 or 19x19
-            handicap_seek.isEnabled = act_size == 9 || act_size == 13 || act_size == 19
+            binding.handicapSeek.isEnabled = act_size == 9 || act_size == 13 || act_size == 19
 
-            handicap_label.text = if (handicap_seek.isEnabled) {
+            binding.handicapLabel.text = if (binding.handicapSeek.isEnabled) {
                 getString(R.string.handicap) + " " + act_handicap
             } else {
                 getString(R.string.handicap_only_for)
@@ -102,14 +106,14 @@ class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
 
         // the checks for change here are important - otherwise samsung moment
         // will die here with stack overflow
-        if (act_size - size_offset != size_seek.progress) size_seek.progress = act_size - size_offset
+        if (act_size - size_offset != binding.sizeSeek.progress) binding.sizeSeek.progress = act_size - size_offset
 
-        if (act_handicap != handicap_seek.progress) handicap_seek.progress = act_handicap
+        if (act_handicap != binding.handicapSeek.progress) binding.handicapSeek.progress = act_handicap
 
-        if (act_lineWidth != line_width_seek.progress) line_width_seek.progress = act_lineWidth
+        if (act_lineWidth != binding.lineWidthSeek.progress) binding.lineWidthSeek.progress = act_lineWidth
 
         if (interactionScope.mode === InteractionScope.Mode.GNUGO)
-            size_seek.max = 19 - size_offset
+            binding.sizeSeek.max = 19 - size_offset
 
         GoPrefs.bulk {
             lastBoardSize = act_size
@@ -122,13 +126,13 @@ class GameSetupFragment : GobandroidFragment(), OnSeekBarChangeListener {
         }
 
         if (activity is GoActivity) {
-            val board = (activity as GoActivity).go_board
+            val board = (activity as GoActivity).binding.goBoard
 
             if (board != null) {
                 board.regenerateStoneImagesWithNewSize()
                 board.invalidate()
 
-                board.setLineSize(line_width_seek.progress.toFloat())
+                board.setLineSize(binding.lineWidthSeek.progress.toFloat())
             }
         }
     }

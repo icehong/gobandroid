@@ -17,11 +17,13 @@
 package org.ligi.gobandroid_hd.ui.alerts
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.dialog_game_forward.view.*
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.DialogGameForwardBinding
+import org.ligi.gobandroid_hd.databinding.DialogGobandroidBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.logic.markers.TextMarker
 import org.ligi.gobandroid_hd.ui.GoPrefs
@@ -38,14 +40,15 @@ import org.ligi.gobandroid_hd.ui.GobandroidDialog
  * *         License: This software is licensed with GPLv3
  */
 class GameForwardAlert(context: Context, game: GoGame) : GobandroidDialog(context) {
+    private var binding: DialogGameForwardBinding = DialogGameForwardBinding.inflate(LayoutInflater.from(context))
 
     init {
 
-        setContentView(R.layout.dialog_game_forward)
+        setContentView(binding.root)
 
         // show the comment when there is one - useful for SGF game problems
         val variationCount = game.possibleVariationCount
-        container.message.text = if (game.actMove.hasComment()) {
+        binding.message.text = if (game.actMove.hasComment()) {
             game.actMove.comment
         } else {
             "$variationCount " + context.getString(R.string.variations_found)
@@ -58,7 +61,7 @@ class GameForwardAlert(context: Context, game: GoGame) : GobandroidDialog(contex
                 game.redo(it.tag as Int)
             }
 
-            if (container.variant_promote_tips.isChecked) {
+            if (binding.variantPromoteTips.isChecked) {
                 GoPrefs.isShowForwardAlertWanted = false
             }
         }
@@ -80,7 +83,7 @@ class GameForwardAlert(context: Context, game: GoGame) : GobandroidDialog(contex
                 var_btn.text = i.toString()
             }
 
-            container.buttonContainer.addView(var_btn)
+            binding.buttonContainer.addView(var_btn)
 
             var_btn.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
         }

@@ -24,6 +24,7 @@
             android:id="@+id/scrollview"
             android:layout_above="@id/container_for_nav">
 
-        <include layout="@layout/comment_textview"/>
+        <include android:id = "@+id/include_comment"
+            layout="@layout/comment_textview"/>
     </ScrollView>
 </RelativeLayout>

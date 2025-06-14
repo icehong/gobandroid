@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'com.getkeepsafe.dexcount'
@@ -121,6 +119,9 @@ android {
             // to avoid MultiDex http://stackoverflow.com/questions/38329248/dexindexoverflowexception-when-running-androidtests
             minifyEnabled false
         }
+    }
+    buildFeatures {
+        viewBinding true
     }
 } // android
 

@@ -17,17 +17,16 @@
 package org.ligi.gobandroid_hd.ui.alerts
 
 import android.content.Context
-import kotlinx.android.synthetic.main.dialog_game_load.view.*
+import android.view.LayoutInflater
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.DialogGameLoadBinding
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 
 open class ProgressDialog(context: Context) : GobandroidDialog(context) {
-
-    val message by lazy { container.message}
-    val progress by lazy { container.progressBar}
+    var binding: DialogGameLoadBinding = DialogGameLoadBinding.inflate(LayoutInflater.from(context))
 
     init {
-        setContentView(R.layout.dialog_game_load)
+        setContentView(binding.root)
         setCancelable(false)
     }
 

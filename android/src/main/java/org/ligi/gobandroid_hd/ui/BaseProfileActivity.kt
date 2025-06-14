@@ -1,27 +1,28 @@
 package org.ligi.gobandroid_hd.ui
 
 import android.os.Bundle
-import kotlinx.android.synthetic.withCloud.profile.*
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.ProfileBinding
 import org.ligi.gobandroid_hd.ui.application.GobandroidFragmentActivity
 
 class BaseProfileActivity : GobandroidFragmentActivity() {
-
+    private lateinit var binding: ProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profile)
+        binding = ProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setTitle(R.string.profile)
 
         supportActionBar?.setDisplayShowTitleEnabled(true)
 
-        rank_edit.setText(GoPrefs.rank)
-        username_edit.setText(GoPrefs.username)
+        binding.rankEdit.setText(GoPrefs.rank)
+        binding.usernameEdit.setText(GoPrefs.username)
     }
 
 
     override fun onPause() {
-        GoPrefs.rank = rank_edit.text.toString()
-        GoPrefs.username = username_edit.text.toString()
+        GoPrefs.rank = binding.rankEdit.text.toString()
+        GoPrefs.username = binding.usernameEdit.text.toString()
         super.onPause()
     }
 

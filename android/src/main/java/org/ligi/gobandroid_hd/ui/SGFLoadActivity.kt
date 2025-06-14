@@ -245,9 +245,9 @@ class SGFLoadActivity : GobandroidFragmentActivity(), Runnable, SGFReader.ISGFLo
         act_message = resources.getString(R.string.move) + " " + progress_val
 
         runOnUiThread {
-            dlg.progress.progress = act_progress
-            dlg.progress.max = max_progress
-            dlg.message.text = act_message
+            dlg.binding.progressBar.progress = act_progress
+            dlg.binding.progressBar.max = max_progress
+            dlg.binding.message.text = act_message
         }
     }
 

@@ -28,27 +28,38 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintManager
-import android.view.*
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnKeyListener
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.game.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.ligi.gobandroid_hd.BuildConfig
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.GameBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.events.OptionsItemClickedEvent
 import org.ligi.gobandroid_hd.logic.Cell
 import org.ligi.gobandroid_hd.logic.GoGame
-import org.ligi.gobandroid_hd.logic.GoGame.MoveStatus.*
+import org.ligi.gobandroid_hd.logic.GoGame.MoveStatus.INVALID_CELL_NO_LIBERTIES
+import org.ligi.gobandroid_hd.logic.GoGame.MoveStatus.INVALID_IS_KO
+import org.ligi.gobandroid_hd.logic.GoGame.MoveStatus.INVALID_NOT_ON_BOARD
 import org.ligi.gobandroid_hd.logic.sgf.SGFWriter
 import org.ligi.gobandroid_hd.print.GoGamePrintDocumentAdapter
-import org.ligi.gobandroid_hd.ui.GoSoundManager.Sound.*
+import org.ligi.gobandroid_hd.ui.GoSoundManager.Sound.PICKUP1
+import org.ligi.gobandroid_hd.ui.GoSoundManager.Sound.PICKUP2
+import org.ligi.gobandroid_hd.ui.GoSoundManager.Sound.PLACE1
+import org.ligi.gobandroid_hd.ui.GoSoundManager.Sound.PLACE2
 import org.ligi.gobandroid_hd.ui.alerts.GameInfoDialog
 import org.ligi.gobandroid_hd.ui.application.GobandroidFragmentActivity
 import org.ligi.gobandroid_hd.ui.fragments.DefaultGameExtrasFragment
@@ -71,14 +82,14 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import java.util.*
+import java.util.Locale
+
 
 /**
  * Activity for a Go Game
  */
 @RuntimePermissions
 open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyListener {
-
     var sound_man: GoSoundManager? = null
 
     private var info_toast: Toast? = null
@@ -87,6 +98,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
     open val isBoardFocusWanted = true
     open val gameExtraFragment: Fragment = DefaultGameExtrasFragment()
     protected val bus = EventBus.getDefault()
+    public lateinit var binding: GameBinding
 
 
     /**
@@ -94,23 +106,34 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
      */
     open fun isAsk4QuitEnabled() = true
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.game)
-
+        binding = GameBinding.bind(findViewById<ViewGroup>(R.id.content_frame).getChildAt(0))
 
         if (!BuildConfig.DEBUG) {
             // if there where stacktraces collected -> give the user the option to send them
             if (!sendTraceDroidStackTracesIfExist("ligi@ligi.de", this)) {
-                SnackEngage.from(go_board)
-                        .withSnack(RateSnack().withConditions(NeverAgainWhenClickedOnce(), AfterNumberOfOpportunities(42)))
-                        .withSnack(TranslateSnack("https://www.transifex.com/ligi/gobandroid/").withConditions(AfterNumberOfOpportunities(4),
-                                IsOneOfTheseLocales(Locale.KOREA,
-                                        Locale.KOREAN),
-                                NeverAgainWhenClickedOnce()))
-                        .build()
-                        .engageWhenAppropriate()
+                SnackEngage.from(binding.goBoard)
+                    .withSnack(
+                        RateSnack().withConditions(
+                            NeverAgainWhenClickedOnce(),
+                            AfterNumberOfOpportunities(42)
+                        )
+                    )
+                    .withSnack(
+                        TranslateSnack("https://www.transifex.com/ligi/gobandroid/").withConditions(
+                            AfterNumberOfOpportunities(4),
+                            IsOneOfTheseLocales(
+                                Locale.KOREA,
+                                Locale.KOREAN
+                            ),
+                            NeverAgainWhenClickedOnce()
+                        )
+                    )
+                    .build()
+                    .engageWhenAppropriate()
             }
         }
 
@@ -154,9 +177,9 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
      * find the go board widget and set up some properties
      */
     private fun setupBoard() {
-        go_board.setOnTouchListener(this)
-        go_board.setOnKeyListener(this)
-        go_board.move_stone_mode = false
+        binding.goBoard.setOnTouchListener(this)
+        binding.goBoard.setOnKeyListener(this)
+        binding.goBoard.move_stone_mode = false
     }
 
 
@@ -164,26 +187,26 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
      * set some preferences on the go board - intended to be called in onResume
      */
     private fun setBoardPreferences() {
-        if (go_board == null) {
+        if (binding.goBoard == null) {
             Timber.w("setBoardPreferences() called with go_board==null - means setupBoard() was propably not called - skipping to not FC")
             return
         }
 
-        go_board.do_legend = GoPrefs.isLegendEnabled
-        go_board.legend_sgf_mode = GoPrefs.isSGFLegendEnabled
-        go_board.setLineSize(GoPrefs.boardLineWidth.toFloat())
+        binding.goBoard.do_legend = GoPrefs.isLegendEnabled
+        binding.goBoard.legend_sgf_mode = GoPrefs.isSGFLegendEnabled
+        binding.goBoard.setLineSize(GoPrefs.boardLineWidth.toFloat())
     }
 
     override fun onResume() {
         super.onResume()
 
         if (isBoardFocusWanted) {
-            go_board.isFocusableInTouchMode = true
-            go_board.isFocusable = true
-            go_board.requestFocus()
+            binding.goBoard.isFocusableInTouchMode = true
+            binding.goBoard.isFocusable = true
+            binding.goBoard.requestFocus()
         } else {
-            go_board.isFocusableInTouchMode = false
-            go_board.isFocusable = false
+            binding.goBoard.isFocusableInTouchMode = false
+            binding.goBoard.isFocusable = false
         }
         setBoardPreferences()
 
@@ -191,7 +214,8 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
         bus.register(this)
     }
 
-    override fun doFullScreen() = GoPrefs.isFullscreenEnabled or resources.getBoolean(R.bool.force_fullscreen)
+    override fun doFullScreen() =
+        GoPrefs.isFullscreenEnabled or resources.getBoolean(R.bool.force_fullscreen)
 
     override fun onCreateOptionsMenu(menu: Menu) = super.onCreateOptionsMenu(menu.apply {
         menuInflater.inflate(R.menu.ingame_common, this)
@@ -257,7 +281,10 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
         return super.onOptionsItemSelected(item)
     }
 
-    @NeedsPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @NeedsPermission(
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun prepareSave() {
         SaveSGFDialog(this).show()
     }
@@ -281,11 +308,11 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
             finish()
         } else {
             AlertDialog.Builder(this).setTitle(R.string.end_game_quesstion_title)
-                    .setMessage(R.string.quit_confirm)
-                    .setPositiveButton(R.string.yes) { _, _ -> finish() }
-                    .setCancelable(true)
-                    .setNegativeButton(R.string.no, null)
-                    .show()
+                .setMessage(R.string.quit_confirm)
+                .setPositiveButton(R.string.yes) { _, _ -> finish() }
+                .setCancelable(true)
+                .setNegativeButton(R.string.no, null)
+                .show()
         }
     }
 
@@ -315,7 +342,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
 
         val res = game.do_move(cell)
 
-        if (res== INVALID_IS_KO || res == INVALID_CELL_NO_LIBERTIES) {
+        if (res == INVALID_IS_KO || res == INVALID_CELL_NO_LIBERTIES) {
             showInfoToast(getToastForResult(res))
         }
 
@@ -331,20 +358,20 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
 
 
     fun game2ui() {
-        go_board.postInvalidate()
+        binding.goBoard.postInvalidate()
         refreshZoomFragment()
     }
 
     protected fun eventForZoomBoard(event: MotionEvent) {
-        interactionScope.touchCell = go_board.pixel2cell(event.x, event.y)
+        interactionScope.touchCell = binding.goBoard.pixel2cell(event.x, event.y)
 
         if (!app.isTesting) {
             if (event.action == MotionEvent.ACTION_UP) {
-                game_extra_container.visibility = View.VISIBLE
-                zoom_board!!.visibility = View.GONE
+                binding.gameExtraContainer.visibility = View.VISIBLE
+                binding.zoomBoard.visibility = View.GONE
             } else if (event.action == MotionEvent.ACTION_DOWN) {
-                game_extra_container.visibility = View.GONE
-                zoom_board!!.visibility = View.VISIBLE
+                binding.gameExtraContainer.visibility = View.GONE
+                binding.zoomBoard.visibility = View.VISIBLE
             }
         }
         refreshZoomFragment()
@@ -381,7 +408,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
 
     public override fun onPause() {
 
-        go_board.move_stone_mode = false
+        binding.goBoard.move_stone_mode = false
 
         if (doAutoSave()) {
             try {
@@ -405,26 +432,30 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
         super.onPause()
     }
 
-    open fun doAutoSave()= false
+    open fun doAutoSave() = false
 
     open fun doTouch(event: MotionEvent) {
 
         // calculate position on the field by position on the touchscreen
 
         when (event.action) {
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> interactionScope.touchCell = go_board.pixel2cell(event.x, event.y)
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> interactionScope.touchCell =
+                binding.goBoard.pixel2cell(event.x, event.y)
 
             MotionEvent.ACTION_OUTSIDE -> interactionScope.touchCell = null
 
             MotionEvent.ACTION_UP -> {
 
-                if (go_board.move_stone_mode) {
+                if (binding.goBoard.move_stone_mode) {
                     // TODO check if this is an illegal move ( e.g. in variants )
 
-                    if (interactionScope.touchCell != null && game.visualBoard.isCellFree(interactionScope.touchCell!!)) {
+                    if (interactionScope.touchCell != null && game.visualBoard.isCellFree(
+                            interactionScope.touchCell!!
+                        )
+                    ) {
                         game.repositionActMove(interactionScope.touchCell!!)
                     }
-                    go_board.move_stone_mode = false // moving of stone done
+                    binding.goBoard.move_stone_mode = false // moving of stone done
                 } else if (game.actMove.isOnCell(interactionScope.touchCell)) {
                     initializeStoneMove()
                 } else {
@@ -441,16 +472,17 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
 
     open fun initializeStoneMove() {
 
-        if (go_board.move_stone_mode) { // already in the mode
+        if (binding.goBoard.move_stone_mode) { // already in the mode
             return  // -> do nothing
         }
 
-        go_board.move_stone_mode = true
+        binding.goBoard.move_stone_mode = true
 
         // TODO check if we only want this in certain modes
         if (GoPrefs.isAnnounceMoveActive) {
 
-            AlertDialog.Builder(this).setMessage(R.string.hint_stone_move).setPositiveButton(R.string.ok
+            AlertDialog.Builder(this).setMessage(R.string.hint_stone_move).setPositiveButton(
+                R.string.ok
 
             ) { _, _ -> GoPrefs.isAnnounceMoveActive = false }.show()
         }
@@ -458,7 +490,8 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
 
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) {
-            val ensuredTouchPosition = interactionScope.touchCell ?: game.statelessGoBoard.getCell(0, 0)
+            val ensuredTouchPosition =
+                interactionScope.touchCell ?: game.statelessGoBoard.getCell(0, 0)
             val boardCell = game.statelessGoBoard.getCell(ensuredTouchPosition)
             when (keyCode) {
                 KeyEvent.KEYCODE_DPAD_UP -> if (boardCell.up != null) {
@@ -490,7 +523,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
                 else -> return false
             }
 
-            go_board.postInvalidate()
+            binding.goBoard.postInvalidate()
             refreshZoomFragment()
             return true
         }
@@ -498,12 +531,12 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
     }
 
     fun refreshZoomFragment() {
-        zoom_board!!.postInvalidate()
+        binding.zoomBoard.postInvalidate()
     }
 
     open fun requestUndo() {
 
-        go_board.move_stone_mode = false
+        binding.goBoard.move_stone_mode = false
 
         UndoWithVariationDialog.userInvokedUndo(this, interactionScope, game)
     }
