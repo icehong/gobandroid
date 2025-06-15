@@ -98,7 +98,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
     open val isBoardFocusWanted = true
     open val gameExtraFragment: Fragment = DefaultGameExtrasFragment()
     protected val bus = EventBus.getDefault()
-    public lateinit var binding: GameBinding
+    lateinit var binding: GameBinding
 
 
     /**
@@ -187,11 +187,6 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
      * set some preferences on the go board - intended to be called in onResume
      */
     private fun setBoardPreferences() {
-        if (binding.goBoard == null) {
-            Timber.w("setBoardPreferences() called with go_board==null - means setupBoard() was propably not called - skipping to not FC")
-            return
-        }
-
         binding.goBoard.do_legend = GoPrefs.isLegendEnabled
         binding.goBoard.legend_sgf_mode = GoPrefs.isSGFLegendEnabled
         binding.goBoard.setLineSize(GoPrefs.boardLineWidth.toFloat())

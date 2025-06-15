@@ -9,12 +9,10 @@ import org.ligi.gobandroid_hd.ui.GobandroidDialog
 import org.ligi.kaxt.doOnProgressChanged
 
 class GnuGoSetupDialog(context: Context) : GobandroidDialog(context) {
-    private lateinit var binding: SetupGnugoBinding
-
+    private var binding: SetupGnugoBinding = SetupGnugoBinding.inflate(layoutInflater)
     private val shared_prefs by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
     init {
-        binding = SetupGnugoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         setTitle(R.string.gnugo)
