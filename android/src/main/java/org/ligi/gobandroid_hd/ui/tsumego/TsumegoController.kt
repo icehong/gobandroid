@@ -2,6 +2,7 @@ package org.ligi.gobandroid_hd.ui.tsumego
 
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.logic.GoMove
+import java.util.Locale
 
 class TsumegoController(val game: GoGame) {
 
@@ -20,8 +21,8 @@ class TsumegoController(val game: GoGame) {
     fun isOnPath() = on_path_moves.contains(game.actMove)
 
     fun isCorrectMove(move: GoMove): Boolean {
-        return move.comment.trim { it <= ' ' }.toUpperCase().startsWith("CORRECT") || // gogameguru style
-                move.comment.toUpperCase().contains("RIGHT")
+        return move.comment.trim { it <= ' ' }.uppercase(Locale.getDefault()).startsWith("CORRECT") || // gogameguru style
+                move.comment.uppercase(Locale.getDefault()).contains("RIGHT")
     }
 
 }

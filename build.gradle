@@ -1,24 +1,24 @@
 buildscript {
     ext {
-        kotlin_version = '1.7.22'
+        kotlin_version = '2.2.0'
         kotpref_version = '2.13.0'
         support_version = '28.0.0'
         play_version = '17.0.0'
     }
 
     repositories {
-        maven{ url 'https://maven.aliyun.com/nexus/content/groups/public'}
-        //maven { url 'https://maven.aliyun.com/repositories/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
         google()
-        //maven { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenCentral()
-        //maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         gradlePluginPortal()
         maven { url 'https://jitpack.io' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:8.10.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.bjoernq:unmockplugin:0.7.6'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'

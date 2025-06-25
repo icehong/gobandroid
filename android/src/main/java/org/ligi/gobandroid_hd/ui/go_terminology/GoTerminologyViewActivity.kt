@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.util.Linkify
 import android.widget.TextView
 import org.ligi.gobandroid_hd.R
+import java.util.Locale
 import java.util.regex.Pattern
 
 class GoTerminologyViewActivity : AppCompatActivity() {
@@ -42,7 +43,7 @@ class GoTerminologyViewActivity : AppCompatActivity() {
             Linkify.addLinks(myTextView, Linkify.ALL)
 
             val mentionFilter: Linkify.TransformFilter = Linkify.TransformFilter { matcher, _ ->
-                matcher.group(1)?.toLowerCase()
+                matcher.group(1).lowercase(Locale.getDefault())
             }
 
             Term2resMap.keys.forEach {

@@ -9,8 +9,10 @@ composer {
 }
 
 repositories {
-    maven{ url 'https://maven.aliyun.com/nexus/content/groups/public'}
-    maven { url 'https://maven.aliyun.com/repositories/google' }
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    maven { url 'https://maven.aliyun.com/repository/central' }
     google()
     mavenCentral()
     maven { url 'https://jitpack.io' }
@@ -19,6 +21,7 @@ repositories {
 }
 
 android {
+    namespace "org.ligi.gobandroid_hd"
     flavorDimensions "analytics", "cloud", "autostart"
 
     productFlavors {
@@ -117,6 +120,8 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
+        aidl true
     }
 } // android
 

@@ -277,7 +277,8 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
                     return@OnTouchListener false
                 }
                 when (event.action) {
-                    MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> cardView.cardElevation = resources.getDimension(R.dimen.cardview_default_elevation)
+                    MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> cardView.cardElevation = resources.getDimension(
+                        androidx.cardview.R.dimen.cardview_default_elevation)
 
                     MotionEvent.ACTION_DOWN -> cardView.cardElevation = resources.getDimension(R.dimen.cardview_unelevated_elevation)
                 }
@@ -335,7 +336,7 @@ class SGFListFragment : GobandroidFragment(), Refreshable {
                     return object : SGFListActionMode(this@SGFListFragment.requireActivity(), fileName, this@SGFListFragment, menuResource) {
                         override fun onDestroyActionMode(mode: ActionMode) {
                             actionMode = null
-                            cardView.cardElevation = resources.getDimension(R.dimen.cardview_default_elevation)
+                            cardView.cardElevation = resources.getDimension(androidx.cardview.R.dimen.cardview_default_elevation)
                             cardView.setTag(R.id.tag_actionmode, null)
                             super.onDestroyActionMode(mode)
                         }
