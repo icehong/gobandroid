@@ -9,8 +9,9 @@ class BaseProfileActivity : GobandroidFragmentActivity() {
     private lateinit var binding: ProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ProfileBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.profile)
+        binding = ProfileBinding.bind(pbinding.contentFrame.getChildAt(0))
+
         setTitle(R.string.profile)
 
         supportActionBar?.setDisplayShowTitleEnabled(true)
@@ -18,7 +19,6 @@ class BaseProfileActivity : GobandroidFragmentActivity() {
         binding.rankEdit.setText(GoPrefs.rank)
         binding.usernameEdit.setText(GoPrefs.username)
     }
-
 
     override fun onPause() {
         GoPrefs.rank = binding.rankEdit.text.toString()

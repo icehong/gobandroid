@@ -110,7 +110,7 @@ open class GoActivity : GobandroidFragmentActivity(), OnTouchListener, OnKeyList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game)
-        binding = GameBinding.bind(findViewById<ViewGroup>(R.id.content_frame).getChildAt(0))
+        binding = GameBinding.bind(pbinding.contentFrame.getChildAt(0))
 
         if (!BuildConfig.DEBUG) {
             // if there where stacktraces collected -> give the user the option to send them

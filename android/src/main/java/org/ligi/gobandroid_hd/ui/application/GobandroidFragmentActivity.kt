@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.NavigationDrawerContainerBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.model.GameProvider
@@ -44,11 +45,14 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
     val gameProvider: GameProvider by App.kodein.lazy.instance()
 
     private var drawerToggle: ActionBarDrawerToggle? = null
-    private var drawerLayout: DrawerLayout? = null
+    //private var drawerLayout: DrawerLayout? = null
+    lateinit var pbinding: NavigationDrawerContainerBinding
 
     @SuppressLint("SoonBlockedPrivateApi")
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        pbinding = NavigationDrawerContainerBinding.inflate(layoutInflater)
+        setContentView(pbinding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // a little hack because I strongly disagree with the style guide here
@@ -70,19 +74,18 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
         if (supportActionBar != null && supportActionBar!!.customView != null) {
             this.supportActionBar!!.customView.isFocusable = false
         }
+
+
     }
 
     private fun closeDrawers() {
-        drawerLayout!!.closeDrawers()
+        pbinding.drawerLayout.closeDrawers()
     }
 
     override fun setContentView(layoutResId: Int) {
-        super.setContentView(R.layout.navigation_drawer_container)
+        layoutInflater.inflate(layoutResId, pbinding.contentFrame)
 
-        layoutInflater.inflate(layoutResId, findViewById<ViewGroup>(R.id.content_frame))
-
-        val leftDrawer = findViewById<NavigationView>(R.id.left_drawer)
-        leftDrawer.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
+        pbinding.leftDrawer.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             val function = actionMap[item.itemId]
             if (function != null) {
                 closeDrawers()
@@ -92,17 +95,15 @@ open class GobandroidFragmentActivity : AppCompatActivity() {
             return@OnNavigationItemSelectedListener false
         })
 
-        drawerLayout = findViewById(R.id.drawer_layout)
-
         drawerToggle = object : ActionBarDrawerToggle(
             this, /* host Activity */
-            drawerLayout, /* DrawerLayout object */
+            pbinding.drawerLayout, /* DrawerLayout object */
             R.string.drawer_open, /* "open drawer" description */
             R.string.drawer_close  /* "close drawer" description */
         ) {
         }
 
-        drawerLayout!!.setDrawerListener(drawerToggle)
+        pbinding.drawerLayout.setDrawerListener(drawerToggle)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
