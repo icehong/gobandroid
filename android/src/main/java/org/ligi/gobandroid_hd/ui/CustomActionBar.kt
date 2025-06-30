@@ -53,7 +53,7 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
     }
 
     init {
-        binding = TopNavAndExtrasBinding.inflate(inflater)
+        binding = TopNavAndExtrasBinding.inflate(inflater,this,true)
 
         refresh()
         binding.modeTv.setOnClickListener {
@@ -65,12 +65,11 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
     }
 
     private fun addItem(container: LinearLayout, image_resId: Int, str_resid: Int, listener: Runnable) {
-        val v = DropdownItemBinding.inflate(inflater)
-        //val v = inflater.inflate(R.layout.dropdown_item, container, false)
-        v.text.setText(str_resid)
-        v.image.setImageResource(image_resId)
-        v.clickContainer.setOnClickListener { listener.run() }
-        container.addView(v.root)
+        val bd = DropdownItemBinding.inflate(inflater,container,false)
+        bd.text.setText(str_resid)
+        bd.image.setImageResource(image_resId)
+        bd.clickContainer.setOnClickListener { listener.run() }
+        container.addView(bd.root)
     }
 
     private fun addModeItem(container: LinearLayout, mode: InteractionScope.Mode, string_res: Int, icon_res: Int, pop: BetterPopupWindow) {

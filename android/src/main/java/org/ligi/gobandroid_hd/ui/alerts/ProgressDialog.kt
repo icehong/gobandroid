@@ -23,10 +23,11 @@ import org.ligi.gobandroid_hd.databinding.DialogGameLoadBinding
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 
 open class ProgressDialog(context: Context) : GobandroidDialog(context) {
-    var binding: DialogGameLoadBinding = DialogGameLoadBinding.inflate(LayoutInflater.from(context))
+    val binding: DialogGameLoadBinding
 
     init {
-        setContentView(binding.root)
+        setContentView(R.layout.dialog_game_load)
+        binding = DialogGameLoadBinding.bind(pbinding.dialogContent.getChildAt(0))
         setCancelable(false)
     }
 

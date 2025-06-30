@@ -23,10 +23,9 @@ package org.ligi.gobandroid_hd.ui.alerts
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import android.view.View
 import org.ligi.gobandroid_hd.R
-import org.ligi.gobandroid_hd.databinding.DialogGameForwardBinding
 import org.ligi.gobandroid_hd.databinding.GameInfoBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.ui.BaseProfileActivity
@@ -40,8 +39,7 @@ import org.ligi.kaxt.startActivityFromClass
  * Class to show an Alert with the Game Info ( who plays / rank / game name .. )
  */
 class GameInfoDialog(context: Context, game: GoGame) : GobandroidDialog(context) {
-    private var binding: GameInfoBinding = GameInfoBinding.inflate(LayoutInflater.from(context))
-
+    private val binding: GameInfoBinding
 
     private fun checkUserNamePresent(): Boolean {
         if (GoPrefs.username.isEmpty()) {
@@ -54,7 +52,8 @@ class GameInfoDialog(context: Context, game: GoGame) : GobandroidDialog(context)
     init {
         setTitle(R.string.game_info)
         setIconResource(R.drawable.ic_action_info_outline)
-        setContentView(binding.root)
+        setContentView(R.layout.game_info)
+        binding = GameInfoBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         binding.blackNameEt.doAfterEdit {
             updateItsMeButtonVisibility()

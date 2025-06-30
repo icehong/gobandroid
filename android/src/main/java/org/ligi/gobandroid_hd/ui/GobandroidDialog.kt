@@ -7,18 +7,17 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
-import android.widget.TextView
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
-import org.ligi.gobandroid_hd.databinding.DialogGameLoadBinding
 import org.ligi.gobandroid_hd.databinding.DialogGobandroidBinding
 import org.ligi.gobandroid_hd.model.GameProvider
 import org.ligi.gobandroid_hd.ui.application.GoAndroidEnvironment
@@ -27,19 +26,19 @@ import org.ligi.gobandroid_hd.ui.application.GoAndroidEnvironment
  * A styled Dialog fit in the gobandroid style
  */
 open class GobandroidDialog(context: Context) : Dialog(context, R.style.dialog_theme) {
-    private var binding: DialogGobandroidBinding = DialogGobandroidBinding.inflate(LayoutInflater.from(context))
+    lateinit var pbinding: DialogGobandroidBinding ;
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     val positive_btn: Button by lazy {
         createButton().apply {
-            binding.buttonContainer.addView(this)
+            pbinding.buttonContainer.addView(this)
         }
     }
 
     val negative_btn: Button by lazy {
         createButton().apply {
-            binding.buttonContainer.addView(this)
+            pbinding.buttonContainer.addView(this)
         }
     }
 
@@ -49,8 +48,8 @@ open class GobandroidDialog(context: Context) : Dialog(context, R.style.dialog_t
 
     init {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-
-        super.setContentView(binding.root)
+        pbinding = DialogGobandroidBinding.inflate(inflater)
+        super.setContentView(pbinding.root)
 
         // this sounds misleading but behaves right - we just do not want to  start with keyboard open
         window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
@@ -58,16 +57,15 @@ open class GobandroidDialog(context: Context) : Dialog(context, R.style.dialog_t
     }
 
     fun setIconResource(@DrawableRes icon: Int) {
-        binding.dialogTitle.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0)
+        pbinding.dialogTitle.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0)
     }
 
     override fun setContentView(@LayoutRes content: Int) {
-        binding.dialogContent.addView(inflater.inflate(content, binding.dialogContent, false))
+        pbinding.dialogContent.addView(inflater.inflate(content, pbinding.dialogContent, false))
     }
 
-
     override fun setTitle(title: CharSequence?) {
-        binding.dialogTitle.text = title
+        pbinding.dialogTitle.text = title
     }
 
     fun setPositiveButton(@StringRes text: Int, listener: (dialog: Dialog) -> Unit = { dismiss() }) {

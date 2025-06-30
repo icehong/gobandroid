@@ -23,7 +23,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.databinding.DialogGameForwardBinding
-import org.ligi.gobandroid_hd.databinding.DialogGobandroidBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.logic.markers.TextMarker
 import org.ligi.gobandroid_hd.ui.GoPrefs
@@ -40,11 +39,12 @@ import org.ligi.gobandroid_hd.ui.GobandroidDialog
  * *         License: This software is licensed with GPLv3
  */
 class GameForwardAlert(context: Context, game: GoGame) : GobandroidDialog(context) {
-    private var binding: DialogGameForwardBinding = DialogGameForwardBinding.inflate(LayoutInflater.from(context))
+    private val binding: DialogGameForwardBinding
 
     init {
 
-        setContentView(binding.root)
+        setContentView(R.layout.dialog_game_forward)
+        binding = DialogGameForwardBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         // show the comment when there is one - useful for SGF game problems
         val variationCount = game.possibleVariationCount

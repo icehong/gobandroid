@@ -18,7 +18,6 @@ package org.ligi.gobandroid_hd.ui.review
 
 
 import org.ligi.gobandroid_hd.R
-import org.ligi.gobandroid_hd.databinding.DialogSaveSgfBinding
 import org.ligi.gobandroid_hd.databinding.EndReviewDialogBinding
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 import org.ligi.gobandroid_hd.ui.GobandroidNotifications
@@ -35,13 +34,13 @@ import org.ligi.gobandroid_hd.ui.sgf_listing.GoLink
  * *         License: This software is licensed with GPLv3
  */
 class EndReviewDialog(context: GobandroidFragmentActivity) : GobandroidDialog(context) {
-    private var binding: EndReviewDialogBinding
+    private val binding: EndReviewDialogBinding
 
     private val meta by lazy { SGFMetaData(gameProvider.get()) }
 
     init {
-        binding = EndReviewDialogBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.end_review_dialog)
+        binding = EndReviewDialogBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         setTitle(R.string.end_review)
         setIconResource(R.drawable.ic_action_help_outline)

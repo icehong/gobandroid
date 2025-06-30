@@ -39,14 +39,14 @@ import java.util.*
  * *         License: This software is licensed with GPLv3
  */
 class BookmarkDialog(context: GobandroidFragmentActivity) : GobandroidDialog(context) {
-    private var binding: SaveBookmarkBinding
+    private val binding: SaveBookmarkBinding
 
     init {
 
         setTitle(R.string.bookmark)
         setIconResource(R.drawable.ic_toggle_star_border)
-        binding = SaveBookmarkBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.save_bookmark)
+        binding = SaveBookmarkBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         val innerFileName = getCleanEnsuredFilename(settings, gameProvider.get())
 

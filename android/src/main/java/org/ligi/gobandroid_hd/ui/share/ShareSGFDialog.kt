@@ -20,11 +20,11 @@ import java.io.File
  * *         License: This software is licensed with GPLv3
  */
 class ShareSGFDialog(context: Context) : GobandroidDialog(context) {
+    private val binding: ShareOptionsBinding
 
     init {
-
-        val binding = ShareOptionsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.share_options)
+        binding = ShareOptionsBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         setTitle(R.string.share)
         setIconResource(R.drawable.ic_social_share)

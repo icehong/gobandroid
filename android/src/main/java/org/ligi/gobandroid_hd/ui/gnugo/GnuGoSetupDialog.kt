@@ -3,20 +3,20 @@ package org.ligi.gobandroid_hd.ui.gnugo
 import android.content.Context
 import android.preference.PreferenceManager
 import org.ligi.gobandroid_hd.R
-import org.ligi.gobandroid_hd.databinding.SaveBookmarkBinding
 import org.ligi.gobandroid_hd.databinding.SetupGnugoBinding
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 import org.ligi.kaxt.doOnProgressChanged
 
 class GnuGoSetupDialog(context: Context) : GobandroidDialog(context) {
-    private var binding: SetupGnugoBinding = SetupGnugoBinding.inflate(layoutInflater)
+    private val binding: SetupGnugoBinding
     private val shared_prefs by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
     init {
-        setContentView(binding.root)
-        
         setTitle(R.string.gnugo)
         setIconResource(R.drawable.ic_action_settings)
+
+        setContentView(R.layout.setup_gnugo)
+        binding = SetupGnugoBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         if (shared_prefs.getBoolean(SP_KEY_PLAYS_BOTH, false)) {
             binding.gnugoPlaysBothRadio.isChecked = true

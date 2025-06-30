@@ -1,11 +1,11 @@
 package org.ligi.gobandroid_hd.ui.recording
 
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.databinding.DialogSaveSgfBinding
-import org.ligi.gobandroid_hd.databinding.LinksViewPagerBinding
 import org.ligi.gobandroid_hd.logic.sgf.SGFWriter
 import org.ligi.gobandroid_hd.ui.GobandroidDialog
 import org.ligi.gobandroid_hd.ui.application.GobandroidFragmentActivity
@@ -24,12 +24,11 @@ import java.util.*
  * @author ligi
  */
 class SaveSGFDialog(private val context: GobandroidFragmentActivity) : GobandroidDialog(context) {
-    private lateinit var binding: DialogSaveSgfBinding
+    private val binding: DialogSaveSgfBinding
 
     init {
-
-        binding = DialogSaveSgfBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.dialog_save_sgf)
+        binding = DialogSaveSgfBinding.bind(pbinding.dialogContent.getChildAt(0))
 
         setIconResource(R.drawable.ic_content_save)
 
