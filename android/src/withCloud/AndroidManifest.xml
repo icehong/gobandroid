@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.ligi.gobandroid_hd">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Only this application can receive the messages and registration result -->
     <permission
@@ -32,7 +30,8 @@
 
         <receiver
             android:name="org.ligi.gobandroid_hd.gcm.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="org.ligi.gobandroid_hd" />
@@ -45,7 +44,8 @@
 
         <activity android:name=".ui.TurnBasedActivity"/>
 
-        <activity android:name="org.ligi.gobandroid_hd.backend.ParseDeepLinkActivity">
+        <activity android:name="org.ligi.gobandroid_hd.backend.ParseDeepLinkActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.google.android.apps.plus.VIEW_DEEP_LINK" />
                 <data android:scheme="vnd.google.deeplink" />

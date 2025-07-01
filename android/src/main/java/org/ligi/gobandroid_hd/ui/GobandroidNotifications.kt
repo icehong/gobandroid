@@ -94,7 +94,8 @@ class GobandroidNotifications(context: Context) {
     }
 
     private fun doNotify(id: Int) {
-        val pendingIntent = PendingIntent.getActivity(app, 0, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(app, 0, notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE)
         notificationBuilder.setContentIntent(pendingIntent)
         notificationManager.notify(id, notificationBuilder.build())
     }
