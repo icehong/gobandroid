@@ -41,7 +41,8 @@ class LinksActivity : GobandroidFragmentActivity() {
 
     class LinkFragmentItem(val title: String, val tag: String, val fragmentGetter: () -> Fragment)
 
-    class LinkListFragmentPager(fm: FragmentManager, val items: Array<LinkFragmentItem>) : FragmentPagerAdapter(fm) {
+    class LinkListFragmentPager(fm: FragmentManager, val items: Array<LinkFragmentItem>) :
+        FragmentPagerAdapter(fm) {
 
         override fun getPageTitle(position: Int): CharSequence {
             return items[position].title
@@ -60,8 +61,8 @@ class LinksActivity : GobandroidFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = LinksViewPagerBinding.inflate(layoutInflater)
-        this.setContentView(binding.root)
+        this.setContentView(R.layout.links_view_pager)
+        binding = LinksViewPagerBinding.bind(pbinding.contentFrame.getChildAt(0))
 
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
