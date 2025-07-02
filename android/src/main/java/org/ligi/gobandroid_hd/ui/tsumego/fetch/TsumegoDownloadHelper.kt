@@ -3,7 +3,8 @@ package org.ligi.gobandroid_hd.ui.tsumego.fetch
 import android.content.Context
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.Okio
+import okio.buffer
+import okio.sink
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.backend.GobandroidBackend
 import org.ligi.gobandroid_hd.ui.application.GoAndroidEnvironment
@@ -58,11 +59,11 @@ object TsumegoDownloadHelper {
 
                     val build = Request.Builder().url(src.remote_path + fileNameByPos).build()
 
-                    val responseBody = client.newCall(build).execute().body()
+                    val responseBody = client.newCall(build).execute().body
                     val downloadedFile = File(src.local_path, fileNameByPos)
 
                     responseBody?.use { body ->
-                        Okio.buffer(Okio.sink(downloadedFile))?.use { sink ->
+                        downloadedFile.sink().buffer().use { sink ->
                             sink.writeAll(body.source())
                         }
                     }

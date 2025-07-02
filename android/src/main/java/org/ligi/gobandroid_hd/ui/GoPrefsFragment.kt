@@ -24,7 +24,7 @@ class GoPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         preferenceScreen = null
         addPreferencesFromResource(R.xml.preferences)
 
-        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
 
         // fullscreen setting is not useful when fullscreen is forced for small devices
         val isFullscreenUseful = !resources.getBoolean(R.bool.force_fullscreen)
@@ -35,7 +35,7 @@ class GoPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
     override fun onPause() {
         super.onPause()
-        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
