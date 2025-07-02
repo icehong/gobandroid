@@ -38,7 +38,7 @@ class GoPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key == getString(R.string.prefs_daynight)) {
             AppCompatDelegate.setDefaultNightMode(GoPrefs.getThemeInt())
             requireActivity().recreate()
