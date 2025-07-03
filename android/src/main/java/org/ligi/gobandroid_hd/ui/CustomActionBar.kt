@@ -16,7 +16,14 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.InteractionScope
-import org.ligi.gobandroid_hd.InteractionScope.Mode.*
+import org.ligi.gobandroid_hd.InteractionScope.Mode.COUNT
+import org.ligi.gobandroid_hd.InteractionScope.Mode.EDIT
+import org.ligi.gobandroid_hd.InteractionScope.Mode.GNUGO
+import org.ligi.gobandroid_hd.InteractionScope.Mode.RECORD
+import org.ligi.gobandroid_hd.InteractionScope.Mode.REVIEW
+import org.ligi.gobandroid_hd.InteractionScope.Mode.SETUP
+import org.ligi.gobandroid_hd.InteractionScope.Mode.TELEVIZE
+import org.ligi.gobandroid_hd.InteractionScope.Mode.TSUMEGO
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.databinding.DropdownItemBinding
 import org.ligi.gobandroid_hd.databinding.TopNavAndExtrasBinding
@@ -59,7 +66,7 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
         binding.modeTv.setOnClickListener {
             showModePopup(activity)
         }
-        binding.modeTv.setOnClickListener {
+        binding.moveTv.setOnClickListener {
             showModePopup(activity)
         }
     }
@@ -164,7 +171,7 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
             binding.blackStoneImageView.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
             binding.blackCapturesTv.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
 
-            binding.modeTv.text = app.resources.getString(R.string.move) + game.actMove.movePos
+            binding.moveTv.text = app.resources.getString(R.string.move) + game.actMove.movePos
         }
     }
 
