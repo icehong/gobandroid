@@ -11,12 +11,9 @@ composer {
 }
 
 repositories {
-    maven { url 'https://maven.aliyun.com/repository/public' }
-    maven { url 'https://maven.aliyun.com/repository/google' }
-    maven { url 'https://maven.aliyun.com/repository/jcenter' }
-    maven { url 'https://maven.aliyun.com/repository/central' }
-    google()
+    maven {url 'https://repo1.maven.org/maven2/' }
     mavenCentral()
+    google()
     maven { url 'https://jitpack.io' }
     maven { url 'https://repo.clojars.org' }
     maven { url 'https://linkedin.jfrog.io/artifactory/open-source/' }
@@ -128,10 +125,10 @@ android {
 } // android
 
 configurations {
-    all {
+    configureEach {
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
-        exclude group: 'com.google.guava', module: 'listenablefuture'
+        //exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 }
 
@@ -151,14 +148,14 @@ dependencies {
     implementation 'com.github.ligi.snackengage:snackengage-playrate:0.27'
     implementation 'com.github.ligi:ExtraCompats:1.0'
     implementation 'jchardet:jchardet:1.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
     implementation 'com.n3twork.druid:alphanum:1.0.3'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
     implementation "com.chibatching.kotpref:initializer:$kotpref_version"
     withAnalyticsImplementation "com.google.android.gms:play-services-analytics:18.0.2"
-    withCloudImplementation "com.google.android.gms:play-services-games:19.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-games:23.1.0"
     withCloudImplementation "com.google.android.gms:play-services-plus:17.0.0"
     withCloudImplementation "com.google.android.gms:play-services-gcm:17.0.0"
     withCloudImplementation('com.google.apis:google-api-services-games:v1-rev98-1.20.0') {
