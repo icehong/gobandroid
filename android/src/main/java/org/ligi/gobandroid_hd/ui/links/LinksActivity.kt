@@ -25,9 +25,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import kotlinx.android.synthetic.main.links_view_pager.*
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.LinksViewPagerBinding
 import org.ligi.gobandroid_hd.ui.application.GobandroidFragmentActivity
 
 /**
@@ -37,11 +37,12 @@ import org.ligi.gobandroid_hd.ui.application.GobandroidFragmentActivity
  */
 
 class LinksActivity : GobandroidFragmentActivity() {
-
+    private lateinit var binding: LinksViewPagerBinding
 
     class LinkFragmentItem(val title: String, val tag: String, val fragmentGetter: () -> Fragment)
 
-    class LinkListFragmentPager(fm: FragmentManager, val items: Array<LinkFragmentItem>) : FragmentPagerAdapter(fm) {
+    class LinkListFragmentPager(fm: FragmentManager, val items: Array<LinkFragmentItem>) :
+        FragmentPagerAdapter(fm) {
 
         override fun getPageTitle(position: Int): CharSequence {
             return items[position].title
@@ -61,6 +62,7 @@ class LinksActivity : GobandroidFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.links_view_pager)
+        binding = LinksViewPagerBinding.bind(pbinding.contentFrame.getChildAt(0))
 
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -74,8 +76,8 @@ class LinksActivity : GobandroidFragmentActivity() {
                 LinkFragmentItem(getString(R.string.link_tab_credits), "credits", { CreditsListFragment() }))
 
 
-        view_pager.adapter = LinkListFragmentPager(supportFragmentManager, items)
-        sliding_tabs.setupWithViewPager(view_pager)
+        binding.viewPager.adapter = LinkListFragmentPager(supportFragmentManager, items)
+        binding.slidingTabs.setupWithViewPager(binding.viewPager)
 
     }
 

@@ -2,8 +2,8 @@ package org.ligi.gobandroid_hd.ui.sgf_listing.item_view_holder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.main.sgf_review_game_details_list_item.view.*
 import org.ligi.gobandroid_hd.FileEncodeDetector
+import org.ligi.gobandroid_hd.databinding.SgfReviewGameDetailsListItemBinding
 import org.ligi.gobandroid_hd.logic.MetaDataFormatter
 import org.ligi.gobandroid_hd.logic.sgf.SGFReader
 import org.ligi.gobandroid_hd.ui.review.SGFMetaData
@@ -11,20 +11,21 @@ import org.ligi.gobandroid_hd.ui.sgf_listing.GoLink
 import java.io.File
 import java.io.IOException
 
-class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ViewHolderInterface {
+class ReviewViewHolder(_binding: SgfReviewGameDetailsListItemBinding) : RecyclerView.ViewHolder(_binding.root), ViewHolderInterface {
+    private val binding = _binding
 
     override fun apply(fileToApply: File) {
         var file = fileToApply
 
-        itemView.title.text = file.name.replace(".sgf", "")
+        binding.title.text = file.name.replace(".sgf", "")
 
         try {
             if (GoLink.isGoLink(file)) {
                 val gl = GoLink(file)
                 file = File(gl.fileName)
-                itemView.game_link_extra_infos.text = "Move #" + gl.moveDepth
+                binding.gameLinkExtraInfos.text = "Move #" + gl.moveDepth
             } else {
-                itemView.game_link_extra_infos.visibility = View.GONE
+                binding.gameLinkExtraInfos.visibility = View.GONE
             }
 
             val sgf_str = file.bufferedReader(FileEncodeDetector.detect(file)).readText()
@@ -35,26 +36,26 @@ class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View
                 val metaFormatter = MetaDataFormatter(game)
 
                 if (metaFormatter.getWhitePlayerString().isEmpty()) {
-                    itemView.player_white_stone_img.visibility = View.GONE
-                    itemView.player_white.visibility = View.GONE
+                    binding.playerWhiteStoneImg.visibility = View.GONE
+                    binding.playerWhite.visibility = View.GONE
                 } else {
-                    itemView.player_white.text = metaFormatter.getWhitePlayerString()
+                    binding.playerWhite.text = metaFormatter.getWhitePlayerString()
                 }
 
                 if (metaFormatter.getBlackPlayerString().isEmpty()) {
-                    itemView.player_black_stone_img.visibility = View.GONE
-                    itemView.player_black.visibility = View.GONE
+                    binding.playerBlackStoneImg.visibility = View.GONE
+                    binding.playerBlack.visibility = View.GONE
                 } else {
-                    itemView.player_black.text = metaFormatter.getBlackPlayerString()
+                    binding.playerBlack.text = metaFormatter.getBlackPlayerString()
                 }
 
-                itemView.game_extra_infos.text = metaFormatter.extrasString
+                binding.gameExtraInfos.text = metaFormatter.extrasString
 
                 if (!sgf_meta.hasData()) {
-                    itemView.game_rating.visibility = View.GONE
+                    binding.gameRating.visibility = View.GONE
                 } else if (sgf_meta.rating != null) {
-                    itemView.game_rating.visibility = View.VISIBLE
-                    itemView.game_rating.rating = .5f * sgf_meta.rating!!
+                    binding.gameRating.visibility = View.VISIBLE
+                    binding.gameRating.rating = .5f * sgf_meta.rating!!
                 }
             }
 

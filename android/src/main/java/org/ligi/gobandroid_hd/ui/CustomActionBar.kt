@@ -12,14 +12,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
-import kotlinx.android.synthetic.main.dropdown_item.view.*
-import kotlinx.android.synthetic.main.top_nav_and_extras.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.ligi.gobandroid_hd.App
 import org.ligi.gobandroid_hd.InteractionScope
-import org.ligi.gobandroid_hd.InteractionScope.Mode.*
+import org.ligi.gobandroid_hd.InteractionScope.Mode.COUNT
+import org.ligi.gobandroid_hd.InteractionScope.Mode.EDIT
+import org.ligi.gobandroid_hd.InteractionScope.Mode.GNUGO
+import org.ligi.gobandroid_hd.InteractionScope.Mode.RECORD
+import org.ligi.gobandroid_hd.InteractionScope.Mode.REVIEW
+import org.ligi.gobandroid_hd.InteractionScope.Mode.SETUP
+import org.ligi.gobandroid_hd.InteractionScope.Mode.TELEVIZE
+import org.ligi.gobandroid_hd.InteractionScope.Mode.TSUMEGO
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.DropdownItemBinding
+import org.ligi.gobandroid_hd.databinding.TopNavAndExtrasBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.model.GameProvider
 import org.ligi.gobandroid_hd.ui.gnugo.GnuGoHelper
@@ -27,6 +34,7 @@ import org.ligi.gobandroid_hd.ui.ingame_common.SwitchModeHelper
 import timber.log.Timber
 
 class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
+    private var binding: TopNavAndExtrasBinding
 
     private val GooglePlayStorePackageNameOld = "com.google.market"
     private val GooglePlayStorePackageNameNew = "com.android.vending"
@@ -40,6 +48,7 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
     private val highlightColor: Int = ResourcesCompat.getColor(resources, R.color.dividing_color, null)
     private val transparent: Int = ResourcesCompat.getColor(resources, android.R.color.transparent, null)
 
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         EventBus.getDefault().register(this)
@@ -51,29 +60,23 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
     }
 
     init {
-
-        inflater.inflate(R.layout.top_nav_and_extras, this)
+        binding = TopNavAndExtrasBinding.inflate(inflater,this,true)
 
         refresh()
-
-        mode_tv.setOnClickListener {
+        binding.modeTv.setOnClickListener {
             showModePopup(activity)
         }
-
-        move_tv.setOnClickListener {
+        binding.moveTv.setOnClickListener {
             showModePopup(activity)
         }
-
-
     }
 
     private fun addItem(container: LinearLayout, image_resId: Int, str_resid: Int, listener: Runnable) {
-
-        val v = inflater.inflate(R.layout.dropdown_item, container, false)
-        v.text.setText(str_resid)
-        v.image.setImageResource(image_resId)
-        v.click_container.setOnClickListener { listener.run() }
-        container.addView(v)
+        val bd = DropdownItemBinding.inflate(inflater,container,false)
+        bd.text.setText(str_resid)
+        bd.image.setImageResource(image_resId)
+        bd.clickContainer.setOnClickListener { listener.run() }
+        container.addView(bd.root)
     }
 
     private fun addModeItem(container: LinearLayout, mode: InteractionScope.Mode, string_res: Int, icon_res: Int, pop: BetterPopupWindow) {
@@ -106,7 +109,7 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
 
     private fun showModePopup(ctx: Context) {
 
-        val pop = BetterPopupWindow(mode_tv)
+        val pop = BetterPopupWindow(binding.modeTv)
 
         val scrollView = ScrollView(ctx)
         val contentView = LinearLayout(ctx)
@@ -153,22 +156,22 @@ class CustomActionBar(private val activity: Activity) : LinearLayout(activity) {
         post {
             val actMode = interactionScope.mode
 
-            mode_tv.setText(actMode.getStringRes())
+            binding.modeTv.setText(actMode.getStringRes())
 
             val game = gameProvider.get()
 
-            white_captures_tv.text = game.capturesWhite.toString()
-            black_captures_tv.text = game.capturesBlack.toString()
+            binding.whiteCapturesTv.text = game.capturesWhite.toString()
+            binding.blackCapturesTv.text = game.capturesBlack.toString()
 
             val isWhitesMove = !game.isBlackToMove && !game.isFinished
-            white_info_container.setBackgroundColor(if (isWhitesMove) highlightColor else transparent)
-            white_captures_tv.setBackgroundColor(if (isWhitesMove) highlightColor else transparent)
+            binding.whiteInfoContainer.setBackgroundColor(if (isWhitesMove) highlightColor else transparent)
+            binding.whiteCapturesTv.setBackgroundColor(if (isWhitesMove) highlightColor else transparent)
 
             val isBlacksMove = game.isBlackToMove || game.isFinished
-            blackStoneImageView.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
-            black_captures_tv.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
+            binding.blackStoneImageView.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
+            binding.blackCapturesTv.setBackgroundColor(if (isBlacksMove) highlightColor else transparent)
 
-            move_tv.text = app.resources.getString(R.string.move) + game.actMove.movePos
+            binding.moveTv.text = app.resources.getString(R.string.move) + game.actMove.movePos
         }
     }
 

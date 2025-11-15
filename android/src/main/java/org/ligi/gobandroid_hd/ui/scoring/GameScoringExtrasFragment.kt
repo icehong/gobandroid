@@ -4,20 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.game_result.view.*
+
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.GameResultBinding
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.GoGameScorer
 import org.ligi.gobandroid_hd.ui.fragments.GobandroidGameAwareFragment
 
 class GameScoringExtrasFragment : GobandroidGameAwareFragment() {
-
-    lateinit var myView: View
+    private var _binding: GameResultBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun createView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        myView = inflater.inflate(R.layout.game_result, container, false)
-        refresh()
-        return myView
+        _binding = GameResultBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onGoGameChanged(gameChangedEvent: GameChangedEvent?) {
@@ -42,18 +50,18 @@ class GameScoringExtrasFragment : GobandroidGameAwareFragment() {
         val game = gameProvider.get()
         val scorer = game.scorer ?: return
 
-        myView.result_txt.text = getFinTXT(scorer)
+        binding.resultTxt.text = getFinTXT(scorer)
 
-        myView.territory_black.text = String.format("%d", scorer.territory_black)
-        myView.territory_white.text = String.format("%d", scorer.territory_white)
+        binding.territoryBlack.text = String.format("%d", scorer.territory_black)
+        binding.territoryWhite.text = String.format("%d", scorer.territory_white)
 
-        myView.captures_black.text = getCapturesString(game.capturesBlack, scorer.dead_white)
-        myView.captures_white.text = getCapturesString(game.capturesWhite, scorer.dead_black)
+        binding.capturesBlack.text = getCapturesString(game.capturesBlack, scorer.dead_white)
+        binding.capturesWhite.text = getCapturesString(game.capturesWhite, scorer.dead_black)
 
-        myView.komi.text = String.format("%.1f", game.komi)
+        binding.komi.text = String.format("%.1f", game.komi)
 
-        myView.final_black.text = String.format("%.1f", scorer.pointsBlack)
-        myView.final_white.text = String.format("%.1f", scorer.pointsWhite)
+        binding.finalBlack.text = String.format("%.1f", scorer.pointsBlack)
+        binding.finalWhite.text = String.format("%.1f", scorer.pointsWhite)
     }
 
     private fun getFinTXT(scorer: GoGameScorer): String {

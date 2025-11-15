@@ -107,7 +107,7 @@ class PlayAgainstGnuGoActivity : GoActivity(), Runnable {
 
         intent.component = name
 
-        app.bindService(intent, connection!!, Context.BIND_AUTO_CREATE)
+        app.bindService(intent, connection!!, BIND_AUTO_CREATE)
 
         Thread(this).start()
 

@@ -2,9 +2,11 @@ package org.ligi.gobandroid_hd.ui.sgf_listing.item_view_holder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.main.sgf_tsumego_list_item.view.*
+
 import org.ligi.gobandroid_hd.FileEncodeDetector
 import org.ligi.gobandroid_hd.R
+import org.ligi.gobandroid_hd.databinding.SgfTsumegoListItemBinding
+import org.ligi.gobandroid_hd.databinding.TwoLineListItemBinding
 import org.ligi.gobandroid_hd.logic.GoGame
 import org.ligi.gobandroid_hd.logic.sgf.SGFReader
 import org.ligi.gobandroid_hd.ui.review.SGFMetaData
@@ -13,11 +15,12 @@ import org.ligi.gobandroid_hd.ui.tsumego.TsumegoHelper
 import java.io.File
 import java.io.IOException
 
-class TsumegoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ViewHolderInterface {
+class TsumegoViewHolder(_binding: SgfTsumegoListItemBinding) : RecyclerView.ViewHolder(_binding.root), ViewHolderInterface {
+    private val binding = _binding
 
     override fun apply(file: File) {
 
-        itemView.title.text = file.name.replace(".sgf", "")
+        binding.title.text = file.name.replace(".sgf", "")
 
         var sgf_str = ""
 
@@ -32,13 +35,13 @@ class TsumegoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vie
 
         }
 
-        val hints_used_fmt = itemView.hints_tv.context.getString(R.string.hints_used)
+        val hints_used_fmt = binding.hintsTv.context.getString(R.string.hints_used)
         var game: GoGame? = SGFReader.sgf2game(sgf_str, null, SGFReader.BREAKON_FIRSTMOVE)
 
         if (game != null) {
             val meta = SGFMetaData(file.absolutePath)
 
-            itemView.hints_tv.text = String.format(hints_used_fmt, meta.hintsUsed)
+            binding.hintsTv.text = String.format(hints_used_fmt, meta.hintsUsed)
 
             val transform = TsumegoHelper.calcTransform(game)
 
@@ -47,14 +50,14 @@ class TsumegoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vie
             }
 
             game!!.jump(game.findFirstMove())
-            itemView.previewView?.game = game
+            binding.previewView?.game = game
 
         }
 
         if (SGFMetaData(file.absolutePath).isSolved) {
-            itemView.solve_status_image.setImageResource(R.drawable.ic_social_school)
+            binding.solveStatusImage.setImageResource(R.drawable.ic_social_school)
         } else {
-            itemView.solve_status_image.setImageResource(R.drawable.ic_action_extension)
+            binding.solveStatusImage.setImageResource(R.drawable.ic_action_extension)
         }
     }
 }

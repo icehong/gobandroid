@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.game.*
+
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.events.GameChangedEvent
 import org.ligi.gobandroid_hd.logic.Cell
@@ -82,7 +82,7 @@ class GameScoringActivity : GoActivity() {
         //super.doTouch(event); - Do not call! Not needed and breaks marking dead stones
 
         eventForZoomBoard(event)
-        val touchCell = go_board.pixel2cell(event.x, event.y)
+        val touchCell = binding.goBoard.pixel2cell(event.x, event.y)
         interactionScope.touchCell = touchCell
 
         // calculate position on the field by position on the touchscreen
