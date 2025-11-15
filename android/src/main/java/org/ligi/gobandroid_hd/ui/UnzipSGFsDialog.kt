@@ -13,10 +13,10 @@ class UnzipSGFsDialog(val activity: Activity, val intent_after_finish: Intent, s
 
     init {
         setTitle("Copying")
-        progress.isIndeterminate = true
+        binding.progressBar.isIndeterminate = true
 
         Thread({
-            val callback: (String) -> Unit = { activity.runOnUiThread { message.text = it } }
+            val callback: (String) -> Unit = { activity.runOnUiThread { binding.message.text = it } }
             decompress(activity.assets, arrayOf("sgf_init"), settings.SGFBasePath, callback)
 
             activity.runOnUiThread {

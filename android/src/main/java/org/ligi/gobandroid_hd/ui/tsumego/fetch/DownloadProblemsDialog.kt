@@ -14,14 +14,14 @@ class DownloadProblemsDialog(context: Activity, refreshable: Refreshable?) : Pro
 
         setIconResource(R.drawable.ic_navigation_refresh)
         setTitle(R.string.please_stay_patient)
-        progress.isIndeterminate = true
-        message.setText(R.string.downloading_tsumegos_please_wait)
+        binding.progressBar.isIndeterminate = true
+        binding.message.setText(R.string.downloading_tsumegos_please_wait)
 
         Thread(Runnable {
             val initList = TsumegoDownloadHelper.getDefaultList(App.env)
             val result = TsumegoDownloadHelper.doDownload(context, initList, {
                 context.runOnUiThread {
-                    message.text = it
+                    binding.message.text = it
                 }
             })
 
@@ -35,8 +35,8 @@ class DownloadProblemsDialog(context: Activity, refreshable: Refreshable?) : Pro
                 }
 
                 setPositiveButton(android.R.string.ok)
-                message.text = msg
-                progress.visibility = View.GONE
+                binding.message.text = msg
+                binding.progressBar.visibility = View.GONE
             }
         }).start()
     }

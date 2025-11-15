@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlin_version = '1.4.31'
-        kotpref_version = '2.13.0'
+        kotlin_version = '2.2.21'
+        kotpref_version = '2.13.2'
         support_version = '28.0.0'
         play_version = '17.0.0'
     }
@@ -15,13 +15,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:8.13.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.bjoernq:unmockplugin:0.7.6'
+        classpath 'com.github.bjoernq:unmockplugin:0.9.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:2.0.0'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:4.0.0'
         classpath 'com.trevjonez.composer:plugin:1.0.0-rc08'
     }
 }
-
-apply from: 'https://raw.githubusercontent.com/ligi/gradle-common/master/versions_plugin_stable_only.gradle'

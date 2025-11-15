@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MotionEvent
-import kotlinx.android.synthetic.main.game.*
+
 import org.ligi.gobandroid_hd.InteractionScope
 import org.ligi.gobandroid_hd.R
 import org.ligi.gobandroid_hd.logic.Cell
@@ -23,7 +23,7 @@ class GameReviewActivity : GoActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        go_board.do_actpos_highlight = false
+        binding.goBoard.do_actpos_highlight = false
     }
 
     override val isBoardFocusWanted = false
