@@ -155,9 +155,9 @@ dependencies {
     implementation "com.chibatching.kotpref:kotpref:$kotpref_version"
     implementation "com.chibatching.kotpref:initializer:$kotpref_version"
     withAnalyticsImplementation "com.google.android.gms:play-services-analytics:18.1.1"
-    withCloudImplementation "com.google.android.gms:play-services-games:17.0.0"
-    withCloudImplementation "com.google.android.gms:play-services-plus:17.0.0"
-    withCloudImplementation "com.google.android.gms:play-services-gcm:17.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-games:24.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-plus:24.0.0"
+    withCloudImplementation "com.google.android.gms:play-services-gcm:24.0.0"
     withCloudImplementation('com.google.apis:google-api-services-games:v1-rev98-1.20.0') {
         exclude module: 'jsr305'
     }
