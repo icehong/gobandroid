@@ -158,7 +158,7 @@ dependencies {
     withCloudImplementation "com.google.android.gms:play-services-games:17.0.0"
     withCloudImplementation "com.google.android.gms:play-services-plus:17.0.0"
     withCloudImplementation "com.google.android.gms:play-services-gcm:17.0.0"
-    withCloudImplementation('com.google.apis:google-api-services-games:v1-rev98-1.20.0') {
+    withCloudImplementation('com.google.apis:google-api-services-games:v1-rev20251003-2.0.0') {
         exclude module: 'jsr305'
     }
     androidTestImplementation 'androidx.test:runner:1.7.0'
